@@ -1,0 +1,74 @@
+package nak.nakloidGUI.actions.files;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Paths;
+import java.util.zip.ZipFile;
+
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.FileDialog;
+
+import nak.nakloidGUI.NakloidGUI;
+import nak.nakloidGUI.actions.AbstractAction;
+import nak.nakloidGUI.coredata.CoreData;
+import nak.nakloidGUI.gui.MainWindow;
+
+public class OpenAction extends AbstractAction {
+	final String[] ext = {"*.nar"};
+	final String [] filterNames = {"Nakloid Archive (*.nar)"};
+
+	public OpenAction(MainWindow mainWindow, CoreData coreData) {
+		super(mainWindow, coreData);
+		setText("開く@Ctrl+O");
+		setAccelerator(SWT.CTRL+'O');
+	}
+
+	@Override
+	public void run() {
+		FileDialog openDialog = new FileDialog(mainWindow.getShell(), SWT.SAVE);
+		openDialog.setFilterExtensions(ext);
+		openDialog.setFilterNames(filterNames);
+		String strPath = openDialog.open();
+		if (strPath==null || strPath.isEmpty()) {
+			return;
+		}
+		NakloidGUI.preferenceStore.setValue("workspace.path_nar", strPath);
+		try (ZipFile zipFile = new ZipFile(strPath, Charset.forName("Shift_JIS"))) {
+			zipFile.stream()
+				.filter(entry -> {
+					String tmpFilename = Paths.get(entry.getName()).getFileName().toString();
+					return tmpFilename.equals("pitches.pit")||tmpFilename.equals("score.nak");
+				}).forEach(entry -> {
+					try (InputStream is = zipFile.getInputStream(entry)) {
+						File tmpFile = Paths.get("temporary", Paths.get(entry.getName()).getFileName().toString()).toFile();
+						tmpFile.getParentFile().mkdirs();
+						try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
+							int size = 0;
+							byte[] buf = new byte[1024];
+							while ((size=is.read(buf)) != -1) {
+								fos.write(buf, 0, size);
+							}
+							fos.flush();
+						}
+					} catch (IOException e) {
+						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", entry.getName()+"の展開に失敗しました");
+						return;
+					}
+				});
+		} catch (IOException e) {
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.getMessage());
+		}
+		try {
+			coreData.synthesize();
+			coreData.reloadScoreAndPitches();
+		} catch (IOException e) {
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.getMessage());
+		} catch (InterruptedException e) {
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "歌声合成時にエラーが発生しました。\n"+e.getMessage());
+		}
+	}
+}
