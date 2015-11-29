@@ -33,7 +33,7 @@ public class BuildAction extends AbstractAction {
 				coreData.nakloidIni.output.path_output_pitches = Paths.get(NakloidGUI.preferenceStore.getString("ini.input.path_input_pitches"));
 			}
 			try {
-				coreData.synthesize();
+				coreData.synthesize(null);
 			} catch (IOException e) {
 				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの入出力にエラーが発生しました。\n"+e.getMessage());
 			} catch (InterruptedException e) {

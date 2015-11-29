@@ -30,15 +30,26 @@ public class CoreData {
 	private Pitches pitches;
 	private Score score;
 	private Waveform wfSong;
-	private List<CoreDataSubscriber> coreDataSubscribers = new ArrayList<CoreDataSubscriber>();
 	final private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 	private Path pathSynthStdout, pathAllPmpStdout;
+	private boolean idling = false;
 
+	private List<CoreDataSubscriber> coreDataSubscribers = new ArrayList<CoreDataSubscriber>();
 	public interface CoreDataSubscriber {
 		public void updateScore();
 		public void updatePitches();
 		public void updateVocal();
 		public void updateSongWaveform();
+	}
+	public void addSubscribers(CoreDataSubscriber coreDataSubscriber) {
+		coreDataSubscribers.add(coreDataSubscriber);
+	}
+	public void removeSubscribers(CoreDataSubscriber coreDataSubscriber) {
+		coreDataSubscribers.remove(coreDataSubscriber);
+	}
+
+	public interface CoreDataSynthesisListener {
+		public void finishSynthesis();
 	}
 
 	static public class Builder {
@@ -116,6 +127,14 @@ public class CoreData {
 		this.pitches = builder.pitches;
 		this.score = builder.score;
 		this.wfSong = builder.wfSong;
+	}
+
+	public boolean idling() {
+		return idling;
+	}
+
+	public void idling(boolean idling) {
+		this.idling = idling;
 	}
 
 	public void reloadPreference() throws IOException {
@@ -297,20 +316,23 @@ public class CoreData {
 
 	public void reloadSongWaveform() {
 		if (nakloidIni.output.path_song!=null && nakloidIni.output.path_song.toFile().isFile()) {
+			if (wfSong != null) {
+				wfSong.close();
+			}
 			wfSong = new Waveform(nakloidIni.output.path_song);
 			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateSongWaveform);
 		}
 	}
 
-	public void addSubscribers(CoreDataSubscriber coreDataSubscriber) {
-		coreDataSubscribers.add(coreDataSubscriber);
+	public void closeSongWaveform() {
+		if (wfSong != null) {
+			wfSong.close();
+			wfSong = null;
+			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateSongWaveform);
+		}
 	}
 
-	public void removeSubscribers(CoreDataSubscriber coreDataSubscriber) {
-		coreDataSubscribers.remove(coreDataSubscriber);
-	}
-
-	public void synthesize() throws IOException, InterruptedException {
+	public void synthesize(CoreDataSynthesisListener cdsl) throws IOException, InterruptedException {
 		nakloidIni.save();
 		System.out.println(sdf.format(System.currentTimeMillis()));
 		pathSynthStdout = Files.createTempFile(Paths.get("temporary"), "CoreData.synthesize.", "");
@@ -330,9 +352,20 @@ public class CoreData {
 					try {
 						br.close();
 						Files.deleteIfExists(pathSynthStdout);
-						reloadPitches();
-						reloadSongWaveform();
-					} catch (IOException e) {}
+						if (nakloidIni.output.path_output_score != null) {
+							reloadScoreAndPitches();
+						} else if (nakloidIni.output.path_output_pitches != null) {
+							reloadPitches();
+						}
+						if (nakloidIni.output.path_song!=null && !idling) {
+							reloadSongWaveform();
+						}
+					} catch (IOException e) {
+					} finally {
+						if (cdsl != null) {
+							cdsl.finishSynthesis();
+						}
+					}
 				}
 			}
 		});

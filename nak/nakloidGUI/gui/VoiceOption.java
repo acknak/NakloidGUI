@@ -648,7 +648,7 @@ public class VoiceOption extends Dialog implements CoreDataSubscriber, VoiceView
 			tmpPmp.save(pathPmpTemporary);
 			tmpCoreData.saveScore(tmpCoreData.nakloidIni.input.path_input_score);
 			tmpCoreData.saveVocal(pathOtoIniTemporary);
-			tmpCoreData.synthesize();
+			tmpCoreData.synthesize(null);
 		} catch (IOException|InterruptedException e) {
 			MessageDialog.openError(getShell(), "NakloidGUI", "歌声の生成に失敗しました。\n"+e.getMessage());
 		}

@@ -63,8 +63,7 @@ public class OpenAction extends AbstractAction {
 			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.getMessage());
 		}
 		try {
-			coreData.synthesize();
-			coreData.reloadScoreAndPitches();
+			coreData.synthesize(null);
 		} catch (IOException e) {
 			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.getMessage());
 		} catch (InterruptedException e) {

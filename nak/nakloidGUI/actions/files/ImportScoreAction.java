@@ -13,12 +13,12 @@ import org.eclipse.swt.widgets.FileDialog;
 import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
-import nak.nakloidGUI.coredata.CoreData.CoreDataSubscriber;
+import nak.nakloidGUI.coredata.CoreData.CoreDataSynthesisListener;
 import nak.nakloidGUI.coredata.NakloidIni;
 import nak.nakloidGUI.coredata.NakloidIni.ScoreMode;
 import nak.nakloidGUI.gui.MainWindow;
 
-public class ImportScoreAction extends AbstractAction implements CoreDataSubscriber {
+public class ImportScoreAction extends AbstractAction {
 	final private static String[] scoreExt = {"*.nak;*.ust;*.smf;*.mid","*.nak","*.ust","*.smf;*.mid"};
 	final private static String[] lyricsExt = {"*.txt"};
 	final private static String [] scoreFilterNames = {"インポート可能な楽譜形式 (*.nak, *.ust, *.smf, *.mid)", "Nakloid Score File (*.nak)", "UTAU Sequence Text (*.ust)", "Standard MIDI File (*.smf, *.mid)"};
@@ -44,7 +44,7 @@ public class ImportScoreAction extends AbstractAction implements CoreDataSubscri
 				CoreData tmpCoreData = new CoreData.Builder()
 						.loadOtoIni(coreData.getVocalPath())
 						.build();
-				tmpCoreData.addSubscribers(this);
+				tmpCoreData.idling(true);
 				tmpCoreData.nakloidIni.input.path_input_score = pathImportScore;
 				if (strScorePath.endsWith(".ust")) {
 					tmpCoreData.nakloidIni.input.score_mode = ScoreMode.score_mode_ust;
@@ -64,7 +64,17 @@ public class ImportScoreAction extends AbstractAction implements CoreDataSubscri
 				tmpCoreData.nakloidIni.output.path_output_score = Paths.get(NakloidGUI.preferenceStore.getString("ini.input.path_input_score"));
 				tmpCoreData.nakloidIni.output.path_output_pitches = Paths.get(NakloidGUI.preferenceStore.getString("ini.input.path_input_pitches"));
 				Files.deleteIfExists(coreData.nakloidIni.input.path_input_pitches);
-				tmpCoreData.synthesize();
+				tmpCoreData.synthesize(new CoreDataSynthesisListener() {
+					@Override
+					public void finishSynthesis() {
+						try {
+							coreData.reloadScoreAndPitches();
+						} catch (IOException e) {
+							MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "生成したファイルの読込に失敗しました。\n"+e.getMessage());
+						}
+						coreData.reloadSongWaveform();
+					}
+				});
 			} catch (IOException e1) {
 				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイル入出力に失敗しました。\n"+e1.getMessage());
 			} catch (InterruptedException e2) {
@@ -77,24 +87,5 @@ public class ImportScoreAction extends AbstractAction implements CoreDataSubscri
 				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルのコピーに失敗しました。\n"+e.getMessage());
 			}
 		}
-	}
-
-	@Override
-	public void updateScore() {}
-
-	@Override
-	public void updatePitches() {}
-
-	@Override
-	public void updateVocal() {}
-
-	@Override
-	public void updateSongWaveform() {
-		try {
-			coreData.reloadScoreAndPitches();
-		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "生成したファイルの読込に失敗しました。\n"+e.getMessage());
-		}
-		coreData.reloadSongWaveform();
 	}
 }
