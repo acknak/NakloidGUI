@@ -80,8 +80,6 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 
 	private ArrayList<MainWindowListener> mainWindowListeners = new ArrayList<MainWindowListener>();
 	public interface MainWindowListener {
-		public void updateHorizontalScale(int msByPixel);
-		public void updateVerticalScale(int noteHeight);
 		public void updateMainWindowSize();
 		public void updateDisplayMode(MainWindowDisplayMode mainWindowDisplayMode);
 	}
@@ -402,6 +400,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	@Override
 	public void pitchesDrawn() {
 		mainView.redraw();
+		mainView.update();
 	}
 
 	@Override
@@ -468,12 +467,8 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		} else {
 			horizontalScale = scale;
 		}
-		for (MainWindowListener mainWindowListener : mainWindowListeners) {
-			mainWindowListener.updateHorizontalScale((int)(NakloidGUI.preferenceStore.getInt("gui.mainWindow.baseMsByPixel")*horizontalScale));
-		}
-		overView.redraw();
-		keyboardView.redraw();
-		mainView.redraw();
+		overView.redraw(mainView.getClientArea().width, mainView.getOffset().x, getMsByPixel());
+		mainView.redraw(getMsByPixel(), getNoteHeight());
 	}
 
 	public double getHorizontalScale() {
@@ -488,11 +483,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		} else {
 			verticalScale = scale;
 		}
-		for (MainWindowListener mainWindowListener : mainWindowListeners) {
-			mainWindowListener.updateVerticalScale((int)(NakloidGUI.preferenceStore.getInt("gui.mainWindow.baseNoteHeight")*verticalScale));
-		}
-		overView.redraw();
-		keyboardView.redraw();
+		keyboardView.redraw(mainView.getOffset().y, getNoteHeight());
 		mainView.redraw();
 	}
 

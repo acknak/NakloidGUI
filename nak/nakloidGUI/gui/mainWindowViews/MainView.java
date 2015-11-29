@@ -123,6 +123,32 @@ public class MainView extends Canvas implements CoreDataSubscriber, MainWindowLi
 		}
 	}
 
+	public void redraw(int msByPixel, int noteHeight) {
+		margin = (int)((double)coreData.nakloidIni.output.ms_margin/msByPixel);
+		viewSize.x = (int)(((double)coreData.getScoreLength())/msByPixel)+margin;
+		viewSize.y = (getMidiNoteUpperLimit()-getMidiNoteLowerLimit()+1)*noteHeight;
+		int clientHeight = getClientArea().height;
+		int clientWidth = getClientArea().width;
+		offset.x = (int)(this.msByPixel/(double)msByPixel*(offset.x-(clientWidth/2))) + (clientWidth/2);
+		offset.y = (int)((double)noteHeight/this.noteHeight*(offset.y-(clientHeight/2))) + (clientHeight/2);
+		if (-offset.x+clientWidth > viewSize.x) {
+			offset.x = clientWidth - viewSize.x;
+		} else if (offset.x > 0) {
+			offset.x = 0;
+		}
+		if (-offset.y+clientHeight > viewSize.y) {
+			offset.y = clientHeight - viewSize.y;
+		} else if (offset.y > 0) {
+			offset.y = 0;
+		}
+		reloadScrollBarsBaseData();
+		verticalBar.setSelection(-offset.y);
+		horizontalBar.setSelection(-offset.x);
+		scroll(offset.x, offset.y, offset.x, offset.y, viewSize.x, viewSize.y, false);
+		this.msByPixel = msByPixel;
+		this.noteHeight = noteHeight;
+	}
+
 	public Point getTimelineSize() {
 		return viewSize;
 	}
@@ -149,39 +175,6 @@ public class MainView extends Canvas implements CoreDataSubscriber, MainWindowLi
 
 	@Override
 	public void updateSongWaveform() {}
-
-	@Override
-	public void updateHorizontalScale(int msByPixel) {
-		margin = (int)((double)coreData.nakloidIni.output.ms_margin/msByPixel);
-		viewSize.x = (int)(((double)coreData.getScoreLength())/msByPixel)+margin;
-		int clientWidth = getClientArea().width;
-		offset.x = (int)(this.msByPixel/(double)msByPixel*(offset.x-(clientWidth/2))) + (clientWidth/2);
-		if (-offset.x+clientWidth > viewSize.x) {
-			offset.x = clientWidth - viewSize.x;
-		} else if (offset.x > 0) {
-			offset.x = 0;
-		}
-		reloadScrollBarsBaseData();
-		verticalBar.setSelection(-offset.y);
-		scroll(offset.x, offset.y, offset.x, offset.y, viewSize.x, viewSize.y, false);
-		horizontalBar.setSelection(-offset.x);
-		this.msByPixel = msByPixel;
-	}
-
-	@Override
-	public void updateVerticalScale(int noteHeight) {
-		viewSize.y = (getMidiNoteUpperLimit()-getMidiNoteLowerLimit()+1)*noteHeight;
-		int clientHeight = getClientArea().height;
-		offset.y = (int)((double)noteHeight/this.noteHeight*(offset.y-(clientHeight/2))) + (clientHeight/2);
-		if (-offset.y+clientHeight > viewSize.y) {
-			offset.y = clientHeight - viewSize.y;
-		} else if (offset.y > 0) {
-			offset.y = 0;
-		}
-		reloadScrollBarsBaseData();
-		verticalBar.setSelection(-offset.y);
-		this.noteHeight = noteHeight;
-	}
 
 	@Override
 	public void updateMainWindowSize() {
