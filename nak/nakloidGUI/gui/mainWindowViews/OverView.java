@@ -62,7 +62,7 @@ public class OverView extends Canvas {
 	public void redraw(Waveform waveform) {
 		if (!this.isDisposed()) {
 			this.waveform = waveform;
-			redraw();
+			super.redraw();
 		}
 	}
 
@@ -71,7 +71,7 @@ public class OverView extends Canvas {
 			this.mainViewWidth = mainViewWitdh;
 			this.mainViewOffset = mainViewOffset;
 			this.msByPixel = msByPixel;
-			redraw();
+			super.redraw();
 		}
 	}
 
@@ -81,7 +81,7 @@ public class OverView extends Canvas {
 			this.mainViewWidth = mainViewWitdh;
 			this.mainViewOffset = mainViewOffset;
 			this.msByPixel = msByPixel;
-			redraw();
+			super.redraw();
 		}
 	}
 
@@ -89,7 +89,7 @@ public class OverView extends Canvas {
 		if (!this.isDisposed()) {
 			this.waveform = null;
 			this.message = message;
-			redraw();
+			super.redraw();
 		}
 	}
 

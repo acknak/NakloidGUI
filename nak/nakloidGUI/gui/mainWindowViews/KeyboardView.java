@@ -31,7 +31,7 @@ public class KeyboardView extends Canvas {
 		if (!this.isDisposed()) {
 			this.mainViewOffset = mainViewOffset;
 			this.noteHeight = noteHeight;
-			redraw();
+			super.redraw();
 		}
 	}
 

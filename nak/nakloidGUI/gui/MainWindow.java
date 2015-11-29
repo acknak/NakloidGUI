@@ -1,6 +1,5 @@
 package nak.nakloidGUI.gui;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -77,12 +76,6 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			displayHorizontalZoomInAction, displayHorizontalZoomOutAction, displayVerticalZoomInAction, displayVerticalZoomOutAction,
 			playAction, buildAction, buildAndPlayAction, exportWavAction, initializePitchesAction,
 			nakloidOptionAction, vocalOptionAction, aboutNakloidAction;
-
-	private ArrayList<MainWindowListener> mainWindowListeners = new ArrayList<MainWindowListener>();
-	public interface MainWindowListener {
-		public void updateMainWindowSize();
-		public void updateDisplayMode(MainWindowDisplayMode mainWindowDisplayMode);
-	}
 
 	static public enum MusicalScales {
 		C(0),C_MAJOR(1),D(2),D_MAJOR(3),E(4),F(5),F_MAJOR(6),G(7),G_MAJOR(8),A(9),A_MAJOR(10),B(11);
@@ -215,7 +208,6 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			container.addControlListener(new ControlListener() {
 				public void controlMoved(ControlEvent e) {}
 				public void controlResized(ControlEvent e) {
-					mainWindowListeners.stream().forEach(MainWindowListener::updateMainWindowSize);
 					overView.redraw();
 					keyboardView.redraw();
 					mainView.redraw();
@@ -279,7 +271,6 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			mainView = new MainView(cntMainView, coreData);
 			mainView.addMainViewListener(this);
 			mainView.setFocus();
-			mainWindowListeners.add(mainView);
 		}
 		if (displayLog) {
 			displayLogAction.run();

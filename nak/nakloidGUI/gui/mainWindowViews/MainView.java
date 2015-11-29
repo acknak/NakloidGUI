@@ -32,12 +32,11 @@ import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.coredata.CoreData;
 import nak.nakloidGUI.coredata.CoreData.CoreDataSubscriber;
 import nak.nakloidGUI.gui.MainWindow.MainWindowDisplayMode;
-import nak.nakloidGUI.gui.MainWindow.MainWindowListener;
 import nak.nakloidGUI.gui.MainWindow.MusicalScales;
 import nak.nakloidGUI.gui.NoteOption;
 import nak.nakloidGUI.models.Note;
 
-public class MainView extends Canvas implements CoreDataSubscriber, MainWindowListener {
+public class MainView extends Canvas implements CoreDataSubscriber {
 	private CoreData coreData;
 	private ScrollBar horizontalBar=getHorizontalBar(), verticalBar=getVerticalBar();
 	private Point viewSize=new Point(0, 0), offset=new Point(0,0);
@@ -111,6 +110,30 @@ public class MainView extends Canvas implements CoreDataSubscriber, MainWindowLi
 		});
 	}
 
+	@Override
+	public void redraw() {
+		if (!this.isDisposed()) {
+			reloadScrollBarsBaseData();
+			int hPage = viewSize.x - getClientArea().width;
+			int vPage = viewSize.y - getClientArea().height;
+			int hSelection = horizontalBar.getSelection();
+			int vSelection = verticalBar.getSelection();
+			if (hSelection >= hPage) {
+				if (hPage <= 0) {
+					hSelection = 0;
+				}
+				offset.x = -hSelection;
+			}
+			if (vSelection >= vPage) {
+				if (vPage <= 0) {
+					vSelection = 0;
+				}
+				offset.y = -vSelection;
+			}
+			super.redraw();
+		}
+	}
+
 	public void redraw(MainWindowDisplayMode mainWindowDisplayMode) {
 		if (!this.isDisposed()) {
 			this.displayMode = mainWindowDisplayMode;
@@ -119,34 +142,37 @@ public class MainView extends Canvas implements CoreDataSubscriber, MainWindowLi
 			} else {
 				getShell().setCursor(cursorArrow);
 			}
-			redraw();
+			super.redraw();
 		}
 	}
 
 	public void redraw(int msByPixel, int noteHeight) {
-		margin = (int)((double)coreData.nakloidIni.output.ms_margin/msByPixel);
-		viewSize.x = (int)(((double)coreData.getScoreLength())/msByPixel)+margin;
-		viewSize.y = (getMidiNoteUpperLimit()-getMidiNoteLowerLimit()+1)*noteHeight;
-		int clientHeight = getClientArea().height;
-		int clientWidth = getClientArea().width;
-		offset.x = (int)(this.msByPixel/(double)msByPixel*(offset.x-(clientWidth/2))) + (clientWidth/2);
-		offset.y = (int)((double)noteHeight/this.noteHeight*(offset.y-(clientHeight/2))) + (clientHeight/2);
-		if (-offset.x+clientWidth > viewSize.x) {
-			offset.x = clientWidth - viewSize.x;
-		} else if (offset.x > 0) {
-			offset.x = 0;
+		if (!this.isDisposed()) {
+			margin = (int)((double)coreData.nakloidIni.output.ms_margin/msByPixel);
+			viewSize.x = (int)(((double)coreData.getScoreLength())/msByPixel)+margin;
+			viewSize.y = (getMidiNoteUpperLimit()-getMidiNoteLowerLimit()+1)*noteHeight;
+			int clientHeight = getClientArea().height;
+			int clientWidth = getClientArea().width;
+			offset.x = (int)(this.msByPixel/(double)msByPixel*(offset.x-(clientWidth/2))) + (clientWidth/2);
+			offset.y = (int)((double)noteHeight/this.noteHeight*(offset.y-(clientHeight/2))) + (clientHeight/2);
+			if (-offset.x+clientWidth > viewSize.x) {
+				offset.x = clientWidth - viewSize.x;
+			} else if (offset.x > 0) {
+				offset.x = 0;
+			}
+			if (-offset.y+clientHeight > viewSize.y) {
+				offset.y = clientHeight - viewSize.y;
+			} else if (offset.y > 0) {
+				offset.y = 0;
+			}
+			reloadScrollBarsBaseData();
+			verticalBar.setSelection(-offset.y);
+			horizontalBar.setSelection(-offset.x);
+			scroll(offset.x, offset.y, offset.x, offset.y, viewSize.x, viewSize.y, false);
+			this.msByPixel = msByPixel;
+			this.noteHeight = noteHeight;
+			super.redraw();
 		}
-		if (-offset.y+clientHeight > viewSize.y) {
-			offset.y = clientHeight - viewSize.y;
-		} else if (offset.y > 0) {
-			offset.y = 0;
-		}
-		reloadScrollBarsBaseData();
-		verticalBar.setSelection(-offset.y);
-		horizontalBar.setSelection(-offset.x);
-		scroll(offset.x, offset.y, offset.x, offset.y, viewSize.x, viewSize.y, false);
-		this.msByPixel = msByPixel;
-		this.noteHeight = noteHeight;
 	}
 
 	public Point getTimelineSize() {
@@ -175,32 +201,6 @@ public class MainView extends Canvas implements CoreDataSubscriber, MainWindowLi
 
 	@Override
 	public void updateSongWaveform() {}
-
-	@Override
-	public void updateMainWindowSize() {
-		reloadScrollBarsBaseData();
-		int hPage = viewSize.x - getClientArea().width;
-		int vPage = viewSize.y - getClientArea().height;
-		int hSelection = horizontalBar.getSelection();
-		int vSelection = verticalBar.getSelection();
-		if (hSelection >= hPage) {
-			if (hPage <= 0) {
-				hSelection = 0;
-			}
-			offset.x = -hSelection;
-		}
-		if (vSelection >= vPage) {
-			if (vPage <= 0) {
-				vSelection = 0;
-			}
-			offset.y = -vSelection;
-		}
-	}
-
-	@Override
-	public void updateDisplayMode(MainWindowDisplayMode mainWindowDisplayMode) {
-		displayMode = mainWindowDisplayMode;
-	}
 
 	private class CanvasPaintListener implements PaintListener {
 		Rectangle clientArea = getClientArea();
