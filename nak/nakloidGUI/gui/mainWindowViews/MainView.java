@@ -42,7 +42,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 	private Point viewSize=new Point(0, 0), offset=new Point(0,0);
 	private MainWindowDisplayMode displayMode = MainWindowDisplayMode.NOTES;
 	private int margin;
-	private int msByPixel = NakloidGUI.preferenceStore.getInt("gui.mainWindow.baseMsByPixel");
+	private double msByPixel = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
 	private int noteHeight = NakloidGUI.preferenceStore.getInt("gui.mainWindow.baseNoteHeight");
 	final private Cursor cursorCross=new Cursor(null,SWT.CURSOR_CROSS), cursorArrow=new Cursor(null,SWT.CURSOR_ARROW);
 	private TreeMap<Integer, Integer> cursorLocus = new TreeMap<Integer, Integer>();
@@ -146,7 +146,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 		}
 	}
 
-	public void redraw(int msByPixel, int noteHeight) {
+	public void redraw(double msByPixel, int noteHeight) {
 		if (!this.isDisposed()) {
 			margin = (int)((double)coreData.nakloidIni.output.ms_margin/msByPixel);
 			viewSize.x = (int)(((double)coreData.getScoreLength())/msByPixel)+margin;
@@ -231,7 +231,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 				if (tmpNote.getBasePitch()<getMidiNoteUpperLimit() && tmpNote.getBasePitch()>getMidiNoteLowerLimit()) {
 					Point tmpPoint = new Point((int)(margin+(tmpNote.getStart()/msByPixel))+offset.x,
 							(getMidiNoteUpperLimit()-tmpNote.getBasePitch())*noteHeight+offset.y);
-					Rectangle tmpRectangle = new Rectangle(tmpPoint.x, tmpPoint.y, tmpNote.getLength()/msByPixel, noteHeight);
+					Rectangle tmpRectangle = new Rectangle(tmpPoint.x, tmpPoint.y, (int)(tmpNote.getLength()/msByPixel), noteHeight);
 					if (displayMode == MainWindowDisplayMode.PITCHES) {
 						gcImage.setAlpha(30);
 					}
@@ -250,7 +250,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 				gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_CYAN));
 				double[] midiNoteNumbers = new double[coreData.getPitches().size()];
 				midiNoteNumbers = coreData.getPitches().getMidiNoteNumbers();
-				int[] tmpPitchPositions = new int[midiNoteNumbers.length*2/msByPixel+2];
+				int[] tmpPitchPositions = new int[(int)(midiNoteNumbers.length*2/msByPixel)+2];
 				tmpPitchPositions[0] = 0;
 				tmpPitchPositions[1] = viewSize.y;
 				for (int i=0; i<midiNoteNumbers.length/msByPixel; i++) {
@@ -258,11 +258,11 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 					boolean isDrawPoint = true;
 					double tmpPitch = 0;
 					for (int j=0; j<msByPixel; j++) {
-						if (midiNoteNumbers[i*msByPixel+j]>getMidiNoteUpperLimit() || midiNoteNumbers[i*msByPixel+j]<getMidiNoteLowerLimit()) {
+						if (midiNoteNumbers[(int)(i*msByPixel)+j]>getMidiNoteUpperLimit() || midiNoteNumbers[(int)(i*msByPixel)+j]<getMidiNoteLowerLimit()) {
 							isDrawPoint = false;
 							break;
 						}
-						tmpPitch += midiNoteNumbers[i*msByPixel+j];
+						tmpPitch += midiNoteNumbers[(int)(i*msByPixel)+j];
 					}
 					tmpPitchPositions[(i+1)*2+1] = isDrawPoint?midiNoteNumber2pos(tmpPitch/msByPixel):viewSize.y;
 				}
@@ -304,7 +304,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 				if (tmpNote.getBasePitch()<getMidiNoteUpperLimit() && tmpNote.getBasePitch()>getMidiNoteLowerLimit()) {
 					Point tmpPoint = new Point((int)(tmpNote.getStart()/msByPixel)+margin+offset.x,
 							(getMidiNoteUpperLimit()-tmpNote.getBasePitch())*noteHeight+offset.y);
-					Rectangle tmpRectangle = new Rectangle(tmpPoint.x, tmpPoint.y, tmpNote.getLength()/msByPixel, noteHeight);
+					Rectangle tmpRectangle = new Rectangle(tmpPoint.x, tmpPoint.y, (int)(tmpNote.getLength()/msByPixel), noteHeight);
 					if (tmpRectangle.contains(clickPoint)) {
 						clickedNote = tmpNote;
 						break;
@@ -352,7 +352,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 			writingMode = false;
 			if (cursorLocus.size() > 0) {
 				List<Integer> cursorKeys = cursorLocus.keySet().stream()
-						.map(i->i*msByPixel)
+						.map(i->(int)(i*msByPixel))
 						.collect(Collectors.toList());
 				Integer[] cursorValues = cursorLocus.values().toArray(new Integer[cursorLocus.size()]);
 				ArrayList<Double> tmpMidiNoteNumbers = new ArrayList<Double>();
@@ -363,7 +363,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 					}
 				}
 				tmpMidiNoteNumbers.add(pos2midiNoteNumber(cursorValues[cursorValues.length-1]));
-				coreData.replaceMidiNoteNumbers(tmpMidiNoteNumbers, (minCursorX-offset.x)*msByPixel);
+				coreData.replaceMidiNoteNumbers(tmpMidiNoteNumbers, (int)((minCursorX-offset.x)*msByPixel));
 				try {
 					coreData.savePitches();
 				} catch (IOException e1) {

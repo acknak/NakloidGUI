@@ -26,7 +26,7 @@ public class OverView extends Canvas {
 	private Waveform waveform;
 	private String message = "";
 	private int mainViewWidth=0, mainViewOffset=0;
-	private int msByPixel = NakloidGUI.preferenceStore.getInt("gui.mainWindow.baseMsByPixel");
+	private double msByPixel = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
 
 	private Rectangle savedArea=new Rectangle(0,0,0,0), tmpArea;
 	private int[][] waveformPoints = null;
@@ -66,7 +66,7 @@ public class OverView extends Canvas {
 		}
 	}
 
-	public void redraw(int mainViewWitdh, int mainViewOffset, int msByPixel) {
+	public void redraw(int mainViewWitdh, int mainViewOffset, double msByPixel) {
 		if (!this.isDisposed()) {
 			this.mainViewWidth = mainViewWitdh;
 			this.mainViewOffset = mainViewOffset;
@@ -75,7 +75,7 @@ public class OverView extends Canvas {
 		}
 	}
 
-	public void redraw(Waveform waveform, int mainViewWitdh, int mainViewOffset, int msByPixel) {
+	public void redraw(Waveform waveform, int mainViewWitdh, int mainViewOffset, double msByPixel) {
 		if (!this.isDisposed()) {
 			this.waveform = waveform;
 			this.mainViewWidth = mainViewWitdh;

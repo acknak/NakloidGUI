@@ -2,6 +2,7 @@ package nak.nakloidGUI.actions.displays;
 
 import org.eclipse.swt.SWT;
 
+import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
 import nak.nakloidGUI.gui.MainWindow;
@@ -14,6 +15,7 @@ public class DisplayHorizontalZoomOutAction extends AbstractAction {
 	}
 	@Override
 	public void run() {
-		mainWindow.setHorizontalScale(mainWindow.getHorizontalScale()+0.2);
+		double baseRate = Math.pow(NakloidGUI.preferenceStore.getInt("gui.mainWindow.baseMsByPixel"), 1/5.0);
+		mainWindow.setHorizontalScale(mainWindow.getHorizontalScale()/baseRate);
 	}
 }

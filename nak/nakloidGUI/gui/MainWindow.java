@@ -451,15 +451,16 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	}
 
 	public void setHorizontalScale(double scale) {
-		if (scale > 1.0) {
+		double scaleLimit = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
+		if (scale > scaleLimit) {
+			horizontalScale = scaleLimit;
+		} else if (scale < 1.0) {
 			horizontalScale = 1.0;
-		} else if (scale < 0.1) {
-			horizontalScale = 0.1;
 		} else {
 			horizontalScale = scale;
 		}
-		overView.redraw(mainView.getClientArea().width, mainView.getOffset().x, getMsByPixel());
 		mainView.redraw(getMsByPixel(), getNoteHeight());
+		overView.redraw(mainView.getClientArea().width, mainView.getOffset().x, getMsByPixel());
 	}
 
 	public double getHorizontalScale() {
@@ -467,15 +468,16 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	}
 
 	public void setVerticalScale(double scale) {
-		if (scale > 10.0) {
-			verticalScale = 10.0;
+		double scaleLimit = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
+		if (scale > scaleLimit) {
+			verticalScale = scaleLimit;
 		} else if (scale < 1.0) {
 			verticalScale = 1.0;
 		} else {
 			verticalScale = scale;
 		}
+		mainView.redraw(getMsByPixel(), getNoteHeight());
 		keyboardView.redraw(mainView.getOffset().y, getNoteHeight());
-		mainView.redraw();
 	}
 
 	public double getVerticalScale() {
@@ -483,11 +485,11 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	}
 
 	public int getNoteHeight() {
-		return (int)(NakloidGUI.preferenceStore.getInt("gui.mainWindow.baseNoteHeight")*verticalScale);
+		return (int)(NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseNoteHeight")*verticalScale);
 	}
 
-	public int getMsByPixel() {
-		return (int)(NakloidGUI.preferenceStore.getInt("gui.mainWindow.baseMsByPixel")*horizontalScale);
+	public double getMsByPixel() {
+		return NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel") / horizontalScale;
 	}
 
 	public void flushLoggerWindow() {
