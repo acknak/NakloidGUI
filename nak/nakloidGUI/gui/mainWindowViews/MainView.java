@@ -250,21 +250,13 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 				gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_CYAN));
 				double[] midiNoteNumbers = new double[coreData.getPitches().size()];
 				midiNoteNumbers = coreData.getPitches().getMidiNoteNumbers();
-				int[] tmpPitchPositions = new int[(int)(midiNoteNumbers.length*2/msByPixel)+2];
+				int[] tmpPitchPositions = new int[(int)(midiNoteNumbers.length/msByPixel)*2+2];
 				tmpPitchPositions[0] = 0;
 				tmpPitchPositions[1] = viewSize.y;
-				for (int i=0; i<midiNoteNumbers.length/msByPixel; i++) {
+				for (int i=0; i<tmpPitchPositions.length/2-1; i++) {
 					tmpPitchPositions[(i+1)*2] = (int)(i+offset.x);
-					boolean isDrawPoint = true;
-					double tmpPitch = 0;
-					for (int j=0; j<msByPixel; j++) {
-						if (midiNoteNumbers[(int)(i*msByPixel)+j]>getMidiNoteUpperLimit() || midiNoteNumbers[(int)(i*msByPixel)+j]<getMidiNoteLowerLimit()) {
-							isDrawPoint = false;
-							break;
-						}
-						tmpPitch += midiNoteNumbers[(int)(i*msByPixel)+j];
-					}
-					tmpPitchPositions[(i+1)*2+1] = isDrawPoint?midiNoteNumber2pos(tmpPitch/msByPixel):viewSize.y;
+					double tmpPitch = midiNoteNumbers[(int)(i*msByPixel)];
+					tmpPitchPositions[(i+1)*2+1] = (tmpPitch>getMidiNoteLowerLimit()&&tmpPitch<getMidiNoteUpperLimit())?midiNoteNumber2pos(tmpPitch):viewSize.y;
 				}
 				gcImage.drawPolyline(tmpPitchPositions);
 
