@@ -24,7 +24,7 @@ public class BuildAction extends AbstractAction {
 		if (coreData.getScoreLength() > 0) {
 			if (coreData.getSongWaveform() != null) {
 				coreData.getSongWaveform().pause();
-				coreData.getSongWaveform().close();;
+				coreData.getSongWaveform().close();
 			}
 			mainWindow.showWaveformStatus("歌声合成中...");
 			mainWindow.flushLoggerWindow();
