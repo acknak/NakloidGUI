@@ -38,13 +38,12 @@ public class InitializePitchesAction extends AbstractAction {
 					.loadScore(coreData.getScorePath())
 					.loadOtoIni(coreData.getVocalPath())
 					.build();
-			tmpCoreData.idling(true);
 			tmpCoreData.nakloidIni.input.path_input_pitches = null;
 			tmpCoreData.nakloidIni.output.path_output_pitches = tmpInputPath;
 			tmpCoreData.nakloidIni.input.pitches_mode = NakloidIni.PitchesMode.pitches_mode_none;
 			tmpCoreData.synthesize(new CoreDataSynthesisListener() {
 				@Override
-				public void finishSynthesis() {
+				public void synthesisFinished() {
 					try {
 						coreData.reloadPitches();
 					} catch (IOException e) {

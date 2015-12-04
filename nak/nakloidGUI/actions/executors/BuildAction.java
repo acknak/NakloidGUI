@@ -9,6 +9,7 @@ import org.eclipse.swt.SWT;
 import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
+import nak.nakloidGUI.coredata.CoreData.CoreDataSynthesisListener;
 import nak.nakloidGUI.coredata.NakloidIni;
 import nak.nakloidGUI.gui.MainWindow;
 
@@ -33,7 +34,12 @@ public class BuildAction extends AbstractAction {
 				coreData.nakloidIni.output.path_output_pitches = Paths.get(NakloidGUI.preferenceStore.getString("ini.input.path_input_pitches"));
 			}
 			try {
-				coreData.synthesize(null);
+				coreData.synthesize(new CoreDataSynthesisListener() {
+					@Override
+					public void synthesisFinished() {
+						coreData.reloadSongWaveform();
+					}
+				});
 			} catch (IOException e) {
 				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの入出力にエラーが発生しました。\n"+e.getMessage());
 			} catch (InterruptedException e) {

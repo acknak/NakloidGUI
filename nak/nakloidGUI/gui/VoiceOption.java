@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import nak.nakloidGUI.coredata.CoreData;
-import nak.nakloidGUI.coredata.CoreData.CoreDataSubscriber;
+import nak.nakloidGUI.coredata.CoreData.CoreDataSynthesisListener;
 import nak.nakloidGUI.gui.voiceOptionViews.OverView;
 import nak.nakloidGUI.gui.voiceOptionViews.SongView;
 import nak.nakloidGUI.gui.voiceOptionViews.VoiceView;
@@ -51,7 +51,7 @@ import nak.nakloidGUI.models.Voice.ParameterType;
 import nak.nakloidGUI.models.Waveform;
 import nak.nakloidGUI.models.Waveform.WaveformStatus;
 
-public class VoiceOption extends Dialog implements CoreDataSubscriber, VoiceViewListener {
+public class VoiceOption extends Dialog implements VoiceViewListener {
 	private final CoreData coreData;
 	private CoreData tmpCoreData;
 	private final Voice voiceOriginal, voicePrefix;
@@ -357,53 +357,6 @@ public class VoiceOption extends Dialog implements CoreDataSubscriber, VoiceView
 	}
 
 	@Override
-	public void updateScore() {}
-
-	@Override
-	public void updatePitches() {}
-
-	@Override
-	public void updateVocal() {}
-
-	@Override
-	public void updateSongWaveform() {
-		showSongWaveformStatus("歌声読込中...");
-		wfSong.ifPresent(Waveform::close);
-		wfSong = Optional.of(new Waveform(tmpCoreData.nakloidIni.output.path_song));
-		if (!Display.getCurrent().isDisposed()) {
-			Display.getCurrent().timerExec(50, new Runnable() {
-				boolean isSongGenerated = false;
-				@Override
-				public void run() {
-					wfSong.ifPresent(wf->{
-						if (wf.getStatus() == Waveform.WaveformStatus.LOADING) {
-							Display.getCurrent().timerExec(50, this);
-						} else if (wf.isLoaded() && !isSongGenerated) {
-							songView.redraw(wf);
-							songView.update();
-							wf.setVolume(sclPlayer.getSelection());
-							try {
-								wf.play();
-							} catch (UnsupportedAudioFileException|IOException|LineUnavailableException e) {
-								MessageDialog.openError(getShell(), "NakloidGUI", "音声の読込に失敗しました。\n"+e.getMessage());
-							}
-							isSongGenerated = true;
-							Display.getCurrent().timerExec(50, this);
-						} else if (wf.getStatus() == Waveform.WaveformStatus.STOPPED) {
-							wf.close();
-							wfSong = Optional.empty();
-							btnPlayer.setEnabled(true);
-						}
-						if (wf.isPlaying()) {
-							Display.getCurrent().timerExec(50, this);
-						}
-					});
-				}
-			});
-		}
-	}
-
-	@Override
 	public void voiceViewHorizontalBarUpdated(SelectionEvent e) {
 		voiceView.redraw();
 		overView.redraw(voiceView.getClientArea().width, voiceView.getOffset());
@@ -607,14 +560,13 @@ public class VoiceOption extends Dialog implements CoreDataSubscriber, VoiceView
 
 	private void synthesis() {
 		tmpCoreData = new CoreData.Builder().build();
-		tmpCoreData.addSubscribers(this);
 		tmpCoreData.setVoice(tmpVoice);
 		if (tmpVoice.isVCV()) {
 			Voice tmpPreVoice = coreData.getVoice(tmpVoice.getPronunciationAlias().getPrefixPron()+tmpVoice.getPronunciationAlias().getSuffix());
 			tmpCoreData.setVoice(tmpPreVoice);
 			Note prefix_note = new Note.Builder(1)
 					.setPronunciationAlias(tmpPreVoice.getPronunciationString())
-					.range(0, 1000)
+					.range(100, 1000)
 					.setBasePitch(Short.valueOf(txtMusicalScale.getText()))
 					.build();
 			tmpCoreData.addNote(prefix_note);
@@ -627,7 +579,7 @@ public class VoiceOption extends Dialog implements CoreDataSubscriber, VoiceView
 		} else {
 			Note tmp_note = new Note.Builder(1)
 					.setPronunciationAlias(tmpVoice.getPronunciationString())
-					.range(1000, 3000)
+					.range(100, 3000)
 					.setBasePitch(Short.valueOf(txtMusicalScale.getText()))
 					.build();
 			tmpCoreData.addNote(tmp_note);
@@ -648,7 +600,45 @@ public class VoiceOption extends Dialog implements CoreDataSubscriber, VoiceView
 			tmpPmp.save(pathPmpTemporary);
 			tmpCoreData.saveScore(tmpCoreData.nakloidIni.input.path_input_score);
 			tmpCoreData.saveVocal(pathOtoIniTemporary);
-			tmpCoreData.synthesize(null);
+			tmpCoreData.synthesize(new CoreDataSynthesisListener() {
+				@Override
+				public void synthesisFinished() {
+					showSongWaveformStatus("歌声読込中...");
+					wfSong.ifPresent(Waveform::close);
+					wfSong = Optional.of(new Waveform(tmpCoreData.nakloidIni.output.path_song));
+					if (!Display.getCurrent().isDisposed()) {
+						Display.getCurrent().asyncExec(new Runnable() {
+							boolean isSongGenerated = false;
+							@Override
+							public void run() {
+								wfSong.ifPresent(wf -> {
+									if (wf.getStatus() == Waveform.WaveformStatus.LOADING) {
+										Display.getCurrent().timerExec(50, this);
+									} else if (wf.isLoaded() && !isSongGenerated) {
+										songView.redraw(wf);
+										songView.update();
+										wf.setVolume(sclPlayer.getSelection());
+										try {
+											wf.play();
+										} catch (UnsupportedAudioFileException|IOException|LineUnavailableException e) {
+											MessageDialog.openError(getShell(), "NakloidGUI", "音声の読込に失敗しました。\n"+e.getMessage());
+										}
+										isSongGenerated = true;
+										Display.getCurrent().timerExec(50, this);
+									} else if (wf.getStatus() == Waveform.WaveformStatus.STOPPED) {
+										wf.close();
+										wfSong = Optional.empty();
+										btnPlayer.setEnabled(true);
+									}
+									if (wf.isPlaying()) {
+										Display.getCurrent().timerExec(50, this);
+									}
+								});
+							}
+						});
+					}
+				}
+			});
 		} catch (IOException|InterruptedException e) {
 			MessageDialog.openError(getShell(), "NakloidGUI", "歌声の生成に失敗しました。\n"+e.getMessage());
 		}

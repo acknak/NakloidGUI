@@ -32,7 +32,6 @@ public class CoreData {
 	private Waveform wfSong;
 	final private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 	private Path pathSynthStdout, pathAllPmpStdout;
-	private boolean idling = false;
 
 	private List<CoreDataSubscriber> coreDataSubscribers = new ArrayList<CoreDataSubscriber>();
 	public interface CoreDataSubscriber {
@@ -49,7 +48,7 @@ public class CoreData {
 	}
 
 	public interface CoreDataSynthesisListener {
-		public void finishSynthesis();
+		public void synthesisFinished();
 	}
 
 	static public class Builder {
@@ -127,14 +126,6 @@ public class CoreData {
 		this.pitches = builder.pitches;
 		this.score = builder.score;
 		this.wfSong = builder.wfSong;
-	}
-
-	public boolean idling() {
-		return idling;
-	}
-
-	public void idling(boolean idling) {
-		this.idling = idling;
 	}
 
 	public void reloadPreference() throws IOException {
@@ -352,18 +343,10 @@ public class CoreData {
 					try {
 						br.close();
 						Files.deleteIfExists(pathSynthStdout);
-						if (nakloidIni.output.path_output_score != null) {
-							reloadScoreAndPitches();
-						} else if (nakloidIni.output.path_output_pitches != null) {
-							reloadPitches();
-						}
-						if (nakloidIni.output.path_song!=null && !idling) {
-							reloadSongWaveform();
-						}
 					} catch (IOException e) {
 					} finally {
 						if (cdsl != null) {
-							cdsl.finishSynthesis();
+							cdsl.synthesisFinished();
 						}
 					}
 				}

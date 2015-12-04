@@ -44,7 +44,6 @@ public class ImportScoreAction extends AbstractAction {
 				CoreData tmpCoreData = new CoreData.Builder()
 						.loadOtoIni(coreData.getVocalPath())
 						.build();
-				tmpCoreData.idling(true);
 				tmpCoreData.nakloidIni.input.path_input_score = pathImportScore;
 				if (strScorePath.endsWith(".ust")) {
 					tmpCoreData.nakloidIni.input.score_mode = ScoreMode.score_mode_ust;
@@ -66,7 +65,7 @@ public class ImportScoreAction extends AbstractAction {
 				Files.deleteIfExists(coreData.nakloidIni.input.path_input_pitches);
 				tmpCoreData.synthesize(new CoreDataSynthesisListener() {
 					@Override
-					public void finishSynthesis() {
+					public void synthesisFinished() {
 						try {
 							coreData.reloadScoreAndPitches();
 						} catch (IOException e) {

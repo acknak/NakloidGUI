@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
+import nak.nakloidGUI.coredata.CoreData.CoreDataSynthesisListener;
 import nak.nakloidGUI.gui.MainWindow;
 
 public class OpenAction extends AbstractAction {
@@ -63,7 +64,16 @@ public class OpenAction extends AbstractAction {
 			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.getMessage());
 		}
 		try {
-			coreData.synthesize(null);
+			coreData.synthesize(new CoreDataSynthesisListener() {
+				@Override
+				public void synthesisFinished() {
+					try {
+						coreData.reloadScoreAndPitches();
+					} catch (IOException e) {
+						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.getMessage());
+					}
+				}
+			});
 		} catch (IOException e) {
 			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.getMessage());
 		} catch (InterruptedException e) {
