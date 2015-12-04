@@ -109,7 +109,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 
 		Shell shellSplash = new Shell(SWT.ON_TOP);
 		shellSplash.setLayout(new FillLayout());
-		Image imgLoad = loadImage("icon.ico");
+		Image imgLoad = loadImage("icon256.png");
 		Splash splash = new Splash(shellSplash, imgLoad);
 		splash.setText("読み込み中...");
 		shellSplash.open();
@@ -193,7 +193,13 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	protected final void configureShell(Shell shell) {
 		super.configureShell(shell);
 		shell.setText("NakloidGUI");
-		shell.setImage(loadImage("icon.ico"));
+		Image[] images = new Image[5];
+		images[0] = loadImage("icon16.png");
+		images[1] = loadImage("icon32.png");
+		images[2] = loadImage("icon64.png");
+		images[3] = loadImage("icon128.png");
+		images[4] = loadImage("icon256.png");
+		shell.setImages(images);
 		shell.setSize(900, 600);
 		shell.setMaximized(true);
 	}
