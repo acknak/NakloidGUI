@@ -1,7 +1,6 @@
 package nak.nakloidGUI.gui;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -22,7 +21,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.coredata.CoreData;
 import nak.nakloidGUI.gui.noteOptionViews.VolumeView;
 import nak.nakloidGUI.gui.noteOptionViews.VolumeView.VolumeViewListener;
@@ -59,7 +57,7 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 		try {
 			if (buttonId == IDialogConstants.OK_ID) {
 				coreData.setNote(tmpNote);
-				coreData.saveScore(Paths.get(NakloidGUI.preferenceStore.getString("ini.input.path_input_score")));
+				coreData.saveScore();
 			} else if (buttonId == IDialogConstants.ABORT_ID) {
 				if (MessageDialog.openQuestion(getShell(), "NakloidGUI", "本当にこの音符を削除しますか？")) {
 					coreData.removeNote(tmpNote);

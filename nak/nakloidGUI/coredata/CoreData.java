@@ -184,7 +184,6 @@ public class CoreData {
 
 	public void saveVoice(Voice voice) throws IOException {
 		vocal.save(voice);
-		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateVocal);
 	}
 
 	public void saveVocal() throws IOException {
