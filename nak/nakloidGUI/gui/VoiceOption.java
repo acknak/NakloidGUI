@@ -78,7 +78,6 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 
 		this.voiceOriginal = tmpVoice = voice;
 		if (!Files.exists(voice.getPmpPath())) {
-			coreData.makePmp(voice.getPronunciationString());
 			reloadPmpFileWithNakloid();
 		}
 		pmpOriginal = tmpPmp = new Pmp.Builder(voice).build();
@@ -96,6 +95,9 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 			Path prefixVoicePath = Paths.get("temporary", voicePrefix.getWavPath().getFileName().toString());
 			Files.copy(voicePrefix.getWavPath(), prefixVoicePath, StandardCopyOption.REPLACE_EXISTING);
 			temporaryPaths.add(prefixVoicePath);
+			if (!Files.exists(voicePrefix.getPmpPath())) {
+				coreData.makePmp(voicePrefix.getPronunciationString());
+			}
 			Path prefixVoicePmpPath = Paths.get("temporary", voicePrefix.getPmpPath().getFileName().toString());
 			Files.copy(voicePrefix.getPmpPath(), prefixVoicePmpPath, StandardCopyOption.REPLACE_EXISTING);
 			temporaryPaths.add(prefixVoicePmpPath);
