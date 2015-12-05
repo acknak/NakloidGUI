@@ -77,12 +77,11 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 		this.coreData = coreData;
 
 		this.voiceOriginal = tmpVoice = voice;
-		if (Files.exists(voice.getPmpPath())) {
-			pmpOriginal = tmpPmp = new Pmp.Builder(voice).build();
-		} else {
-			pmpOriginal = tmpPmp = null;
+		if (!Files.exists(voice.getPmpPath())) {
+			coreData.makePmp(voice.getPronunciationString());
 			reloadPmpFileWithNakloid();
 		}
+		pmpOriginal = tmpPmp = new Pmp.Builder(voice).build();
 		wfBase = wfSong = wfPmpTeacher = wfPmpPrefixTeacher = Optional.empty();
 		pathOtoIniTemporary = Paths.get("temporary","oto.ini");
 		pathPmpTemporary = Paths.get("temporary", voice.getPmpPath().getFileName().toString());
