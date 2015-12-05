@@ -117,8 +117,10 @@ public class VocalOption extends Dialog implements CoreDataSubscriber {
 
 	@Override
 	public void updateVocal() {
-		tableViewer.setInput(coreData.getVoicesArray());
-		tableViewer.refresh();
+		if (getShell()!=null && !getShell().isDisposed()) {
+			tableViewer.setInput(coreData.getVoicesArray());
+			tableViewer.refresh();
+		}
 	}
 
 	@Override
