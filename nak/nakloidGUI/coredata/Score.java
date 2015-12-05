@@ -145,8 +145,8 @@ public class Score {
 					}
 				}
 				int padding = msFadeEnd - msFadeStart;
-				int prevBackMargin = prevNote.getPronEnd(0, prevVoice) - msFadeStart;
-				int frontMargin = msFadeEnd - tmpNote.getPronStart(0, tmpVoice);
+				int prevBackMargin = prevNote.getPronEnd(0, prevVoice) - msFadeEnd;
+				int frontMargin = msFadeStart - tmpNote.getPronStart(0, tmpVoice);
 				notes.set(i-1, new Note.Builder(notes.get(i-1)).setBackPadding(padding).setBackMargin(prevBackMargin).build());
 				notes.set(i, new Note.Builder(notes.get(i)).setFrontMargin(frontMargin).setFrontPadding(padding).build());
 			} else {
