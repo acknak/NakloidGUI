@@ -409,6 +409,8 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	public void preferenceReloaded() {
 		try {
 			coreData.reloadPreference();
+			mainView.redraw();
+			keyboardView.redraw();
 		} catch (IOException e) {
 			MessageDialog.openError(getShell(), "NakloidGUI", "設定ファイルの再読込に失敗しました。\n"+e.toString()+e.getMessage());
 		}
