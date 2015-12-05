@@ -21,7 +21,7 @@ final public class VocalInfo implements Cloneable {
 		try (Stream<String> stream = Files.lines(path, Charset.forName("Shift_JIS"))) {
 			stream.forEachOrdered(line -> {
 				StringTokenizer st = new StringTokenizer(line, "=");
-				if (st.hasMoreTokens()) {
+				if (st.countTokens() > 1) {
 					String strLeft = st.nextToken();
 					if (strLeft.equals("name")) {
 						name = st.nextToken();
@@ -40,8 +40,6 @@ final public class VocalInfo implements Cloneable {
 					mainText += line + "\n";
 				}
 			});
-		} catch (IOException e) {
-			throw e;
 		}
 		Path tmp = Paths.get(path.getParent().toString(), "readme.txt");
 		if (Files.exists(tmp)) {
