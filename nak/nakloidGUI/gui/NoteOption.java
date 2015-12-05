@@ -253,13 +253,7 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 						GridData layTxtFrontMargin = new GridData(SWT.LEFT);
 						layTxtFrontMargin.widthHint = 40;
 						txtFrontMargin.setLayoutData(layTxtFrontMargin);
-						txtFrontMargin.addKeyListener(new KeyAdapter(){
-							public void keyReleased(KeyEvent e) {
-								tmpNote = new Note.Builder(tmpNote).setFrontMargin(Integer.valueOf(((Text)e.getSource()).getText())).build();
-								updateNoteParameters();
-							}
-						});
-						txtFrontMargin.setEnabled(tmpNote.getVelPointsSize()==0);
+						txtFrontMargin.setEnabled(false);
 					}
 					{
 						Label lblFrontMarginMs = new Label(cmpFrontMargin, SWT.LEFT);
@@ -279,13 +273,7 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 						GridData layTxtFrontPadding = new GridData(SWT.LEFT);
 						layTxtFrontPadding.widthHint = 40;
 						txtFrontPadding.setLayoutData(layTxtFrontPadding);
-						txtFrontPadding.addKeyListener(new KeyAdapter(){
-							public void keyReleased(KeyEvent e) {
-								tmpNote = new Note.Builder(tmpNote).setFrontPadding(Integer.valueOf(((Text)e.getSource()).getText())).build();
-								updateNoteParameters();
-							}
-						});
-						txtFrontPadding.setEnabled(tmpNote.getVelPointsSize()==0);
+						txtFrontPadding.setEnabled(false);
 					}
 					{
 						Label lblFrontPaddingMs = new Label(cmpFrontPadding, SWT.LEFT);
@@ -305,13 +293,7 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 						GridData layTxtBackPadding = new GridData(SWT.LEFT);
 						layTxtBackPadding.widthHint = 40;
 						txtBackPadding.setLayoutData(layTxtBackPadding);
-						txtBackPadding.addKeyListener(new KeyAdapter(){
-							public void keyReleased(KeyEvent e) {
-								tmpNote = new Note.Builder(tmpNote).setBackPadding(Integer.valueOf(((Text)e.getSource()).getText())).build();
-								updateNoteParameters();
-							}
-						});
-						txtBackPadding.setEnabled(tmpNote.getVelPointsSize()==0);
+						txtBackPadding.setEnabled(false);
 					}
 					{
 						Label lblBackPaddingMs = new Label(cmpBackPadding, SWT.LEFT);
@@ -331,13 +313,7 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 						GridData layTxtBackMargin = new GridData(SWT.LEFT);
 						layTxtBackMargin.widthHint = 40;
 						txtBackMargin.setLayoutData(layTxtBackMargin);
-						txtBackMargin.addKeyListener(new KeyAdapter(){
-							public void keyReleased(KeyEvent e) {
-								tmpNote = new Note.Builder(tmpNote).setBackMargin(Integer.valueOf(((Text)e.getSource()).getText())).build();
-								updateNoteParameters();
-							}
-						});
-						txtBackMargin.setEnabled(tmpNote.getVelPointsSize()==0);
+						txtBackMargin.setEnabled(false);
 					}
 					{
 						Label lblBackMarginMs = new Label(cmpBackMargin, SWT.LEFT);
@@ -352,10 +328,6 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 	@Override
 	public void volumeViewAddVelPoint(int ms, int size) {
 		tmpNote = tmpNote.addVelPoint(ms, size);
-		txtFrontMargin.setEnabled(false);
-		txtFrontPadding.setEnabled(false);
-		txtBackPadding.setEnabled(false);
-		txtBackMargin.setEnabled(false);
 		txtBaseVelocity.setEnabled(false);
 		volumeView.redraw(tmpNote, coreData.getVoice(tmpNote.getPronunciationAlias()));
 	}
@@ -364,10 +336,6 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 	public void volumeViewDeleteVelPoint(int ms) {
 		tmpNote = tmpNote.deleteVelPoint(ms);
 		if (tmpNote.getVelPointsSize() == 0) {
-			txtFrontMargin.setEnabled(true);
-			txtFrontPadding.setEnabled(true);
-			txtBackPadding.setEnabled(true);
-			txtBackMargin.setEnabled(true);
 			txtBaseVelocity.setEnabled(true);
 		}
 		volumeView.redraw(tmpNote, coreData.getVoice(tmpNote.getPronunciationAlias()));
@@ -384,11 +352,7 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 			VoiceOption dialog = new VoiceOption(getShell(), coreData, voice);
 			dialog.open();
 		} catch (IOException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "存在しない発音です");
+			MessageDialog.openError(getShell(), "NakloidGUI", "存在しない発音です。\n"+e.getMessage());
 		}
-	}
-
-	private void updateNoteParameters() {
-		volumeView.redraw(tmpNote, coreData.getVoice(tmpNote.getPronunciationAlias()));
 	}
 }

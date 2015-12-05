@@ -178,6 +178,7 @@ public class CoreData {
 
 	public void setVoice(Voice voice) {
 		vocal.setVoice(voice);
+		score.resetNotesBorder(vocal);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateVocal);
 	}
 
@@ -198,6 +199,7 @@ public class CoreData {
 		if (nakloidIni.input.path_singer!=null && nakloidIni.input.path_singer.toFile().isDirectory()) {
 			vocal = new Vocal(nakloidIni.input.path_singer);
 			wfSong = null;
+			score.resetNotesBorder(vocal);
 			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateVocal);
 			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateSongWaveform);
 		}
@@ -253,21 +255,25 @@ public class CoreData {
 
 	public void addNote(Note note) {
 		score.addNote(note);
+		score.resetNotesBorder(vocal);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
 	public void setNote(Note note) {
 		score.setNote(note);
+		score.resetNotesBorder(vocal);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
 	public void removeNote(Note note) {
 		score.removeNote(note);
+		score.resetNotesBorder(vocal);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
 	public void removeNote(int id) {
 		score.removeNote(id);
+		score.resetNotesBorder(vocal);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
@@ -277,6 +283,7 @@ public class CoreData {
 
 	public void setScorePath(Path path) {
 		score.setPath(path);
+		score.resetNotesBorder(vocal);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
@@ -286,6 +293,7 @@ public class CoreData {
 
 	public void setLyrics(List<PronunciationAlias> lyrics) {
 		score.setLyrics(lyrics);
+		score.resetNotesBorder(vocal);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 

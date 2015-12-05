@@ -22,8 +22,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.models.Note;
 import nak.nakloidGUI.models.PronunciationAlias;
+import nak.nakloidGUI.models.Voice;
 
 public class Score {
 	@JsonIgnore
@@ -117,6 +119,40 @@ public class Score {
 	public void setLyrics(List<PronunciationAlias> lyrics) {
 		for (int i=0; i<lyrics.size()&&i<notes.size(); i++) {
 			notes.set(i, new Note.Builder(notes.get(i)).setPronunciationAlias(lyrics.get(i)).build());
+		}
+	}
+
+	@JsonIgnore
+	public void resetNotesBorder(Vocal vocal) {
+		if (notes==null || notes.size()<2) {
+			return;
+		}
+		int defaultFrontPadding = NakloidGUI.preferenceStore.getInt("ini.note.ms_front_padding");
+		int defaultBackPadding = NakloidGUI.preferenceStore.getInt("ini.note.ms_back_padding");
+		int defaultPadding = Math.max(defaultFrontPadding, defaultBackPadding);
+		notes.set(0, new Note.Builder(notes.get(0)).setFrontMargin(0).setFrontPadding(0).build());
+		for (int i=1; i<notes.size(); i++) {
+			Note tmpNote=notes.get(i), prevNote=notes.get(i-1);
+			Voice tmpVoice=vocal.getVoice(tmpNote.getPronunciationAlias()), prevVoice=vocal.getVoice(prevNote.getPronunciationAlias());
+			if (tmpNote.getPronunciationAlias().checkVCV() && tmpVoice!=null && tmpVoice.getOverlap()>0) {
+				int msFadeStart = tmpNote.getStart() - tmpVoice.getPreutterance();
+				int msFadeEnd = msFadeStart + tmpVoice.getOverlap();
+				int msPrevConsStart = prevNote.getStart() - prevVoice.getPreutterance() + prevVoice.getConsonant();
+				if (msFadeStart < msPrevConsStart) {
+					msFadeStart = msPrevConsStart;
+					if (msFadeEnd-msFadeStart < defaultPadding) {
+						msFadeEnd = msFadeStart + defaultPadding;
+					}
+				}
+				int padding = msFadeEnd - msFadeStart;
+				int prevBackMargin = prevNote.getPronEnd(0, prevVoice) - msFadeStart;
+				int frontMargin = msFadeEnd - tmpNote.getPronStart(0, tmpVoice);
+				notes.set(i-1, new Note.Builder(notes.get(i-1)).setBackPadding(padding).setBackMargin(prevBackMargin).build());
+				notes.set(i, new Note.Builder(notes.get(i)).setFrontMargin(frontMargin).setFrontPadding(padding).build());
+			} else {
+				notes.set(i-1, new Note.Builder(notes.get(i-1)).setBackPadding(defaultBackPadding).setBackMargin(0).build());
+				notes.set(i, new Note.Builder(notes.get(i)).setFrontMargin(0).setFrontPadding(defaultFrontPadding).build());
+			}
 		}
 	}
 

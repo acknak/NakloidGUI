@@ -214,7 +214,7 @@ final public class Note implements Comparable<Note> {
 
 	@JsonIgnore
 	public int getPronEnd(int score_margin, Voice voice) {
-		int tmp_pron_end = end + score_margin - back_margin;
+		int tmp_pron_end = end + score_margin;
 		int tmp_pron_start = getPronStart(score_margin, voice);
 		if (tmp_pron_start > tmp_pron_end) {
 			return tmp_pron_start + 1;

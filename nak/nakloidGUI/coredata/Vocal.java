@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import nak.nakloidGUI.models.PronunciationAlias;
 import nak.nakloidGUI.models.VocalInfo;
 import nak.nakloidGUI.models.Voice;
 
@@ -98,6 +99,10 @@ public class Vocal {
 
 	public Voice getVoice(String pron) {
 		return (voices.containsKey(pron))?voices.get(pron):null;
+	}
+
+	public Voice getVoice(PronunciationAlias pron) {
+		return getVoice(pron.getAliasString());
 	}
 
 	public Voice[] getVoicesArray() {
