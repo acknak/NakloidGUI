@@ -2,6 +2,7 @@ package nak.nakloidGUI.gui.preferencePages.ini;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,6 +31,12 @@ public class GeneralIniPage extends FieldEditorPreferencePage {
 		{
 			BooleanFieldEditor field = new BooleanFieldEditor("ini.vocal_library.use_uwc_cache", "UWCキャッシュを使用する", container);
 			addField(field);
+		}
+		{
+			IntegerFieldEditor ifeVibratoOffset = new IntegerFieldEditor("ini.input.track", "使用するMIDIトラック", container, 2);
+			ifeVibratoOffset.setValidRange(1, 99);
+			ifeVibratoOffset.setErrorMessage("正の整数を入力して下さい");
+			addField(ifeVibratoOffset);
 		}
 	}
 }
