@@ -63,7 +63,7 @@ final public class PronunciationAlias {
 	}
 
 	public boolean checkVCV() {
-		return (!prefix.isEmpty() && prefix.indexOf(" ")!=-1 && !prefix.startsWith("-"));
+		return (!prefix.isEmpty() && prefix.indexOf(" ")!=-1 && !prefix.startsWith("-") && !prefix.startsWith("*"));
 	}
 
 	public boolean checkVowelPron() {
