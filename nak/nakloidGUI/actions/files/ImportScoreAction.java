@@ -86,5 +86,6 @@ public class ImportScoreAction extends AbstractAction {
 				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルのコピーに失敗しました。\n"+e.toString()+e.getMessage());
 			}
 		}
+		NakloidGUI.preferenceStore.setValue("workspace.path_nar", "");
 	}
 }
