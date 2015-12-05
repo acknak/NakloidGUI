@@ -84,7 +84,7 @@ public class ImportVocalAction extends AbstractAction {
 					}
 				});
 			} catch (IOException e) {
-				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.getMessage());
+				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.toString()+e.getMessage());
 				return;
 			}
 			try {
@@ -93,7 +93,7 @@ public class ImportVocalAction extends AbstractAction {
 				}
 				coreData.reloadVocal();
 			} catch (IOException e) {
-				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ボーカルの読み込みに失敗しました。\n"+e.getMessage());
+				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ボーカルの読み込みに失敗しました。\n"+e.toString()+e.getMessage());
 				return;
 			}
 			MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", strPath+"をインポートしました。");

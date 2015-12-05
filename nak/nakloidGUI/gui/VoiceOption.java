@@ -137,7 +137,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 				Files.deleteIfExists(tmpVoice.getUwcPath());
 				coreData.saveVoice(tmpVoice);
 			} catch (IOException e) {
-				MessageDialog.openError(getShell(), "NakloidGUI", "ファイル入出力に失敗しました。\n"+e.getMessage());
+				MessageDialog.openError(getShell(), "NakloidGUI", "ファイル入出力に失敗しました。\n"+e.toString()+e.getMessage());
 			}
 		}
 		super.buttonPressed(buttonId);
@@ -386,7 +386,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 			coreData.makePmp(tmpVoice.getPronunciationString());
 			tmpPmp = new Pmp.Builder(tmpVoice).build();
 		} catch (IOException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "ピッチマークの再読込に失敗しました。\n"+e.getMessage());
+			MessageDialog.openError(getShell(), "NakloidGUI", "ピッチマークの再読込に失敗しました。\n"+e.toString()+e.getMessage());
 		}
 	}
 
@@ -622,7 +622,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 										try {
 											wf.play();
 										} catch (UnsupportedAudioFileException|IOException|LineUnavailableException e) {
-											MessageDialog.openError(getShell(), "NakloidGUI", "音声の読込に失敗しました。\n"+e.getMessage());
+											MessageDialog.openError(getShell(), "NakloidGUI", "音声の読込に失敗しました。\n"+e.toString()+e.getMessage());
 										}
 										isSongGenerated = true;
 										Display.getCurrent().timerExec(50, this);
@@ -641,7 +641,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 				}
 			});
 		} catch (IOException|InterruptedException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "歌声の生成に失敗しました。\n"+e.getMessage());
+			MessageDialog.openError(getShell(), "NakloidGUI", "歌声の生成に失敗しました。\n"+e.toString()+e.getMessage());
 		}
 	}
 }

@@ -59,7 +59,7 @@ public class SaveAction extends AbstractAction {
 				}
 			}
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイル入出力に失敗しました。\n"+e.getMessage());
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイル入出力に失敗しました。\n"+e.toString()+e.getMessage());
 		} finally {
 			try {
 				zos.close();

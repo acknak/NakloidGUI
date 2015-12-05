@@ -68,7 +68,7 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 				}
 			}
 		} catch (IOException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "楽譜の保存に失敗しました。\n"+e.getMessage());
+			MessageDialog.openError(getShell(), "NakloidGUI", "楽譜の保存に失敗しました。\n"+e.toString()+e.getMessage());
 		} finally {
 			super.buttonPressed(buttonId);
 		}
@@ -352,7 +352,7 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 			VoiceOption dialog = new VoiceOption(getShell(), coreData, voice);
 			dialog.open();
 		} catch (IOException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "存在しない発音です。\n"+e.getMessage());
+			MessageDialog.openError(getShell(), "NakloidGUI", "存在しない発音です。\n"+e.toString()+e.getMessage());
 		}
 	}
 }

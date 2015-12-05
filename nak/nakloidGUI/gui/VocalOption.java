@@ -96,7 +96,7 @@ public class VocalOption extends Dialog implements CoreDataSubscriber {
 					VoiceOption dialog = new VoiceOption(getShell(), coreData, voice);
 					dialog.open();
 				} catch (IOException e) {
-					MessageDialog.openError(getShell(), "NakloidGUI", "音声の読込に失敗しました。\n"+e.getMessage());
+					MessageDialog.openError(getShell(), "NakloidGUI", "音声の読込に失敗しました。\n"+e.toString()+e.getMessage());
 				}
 			}
 		});

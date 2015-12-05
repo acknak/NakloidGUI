@@ -410,7 +410,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		try {
 			coreData.reloadPreference();
 		} catch (IOException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "設定ファイルの再読込に失敗しました。\n"+e.getMessage());
+			MessageDialog.openError(getShell(), "NakloidGUI", "設定ファイルの再読込に失敗しました。\n"+e.toString()+e.getMessage());
 		}
 	}
 

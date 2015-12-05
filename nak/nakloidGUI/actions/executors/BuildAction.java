@@ -41,9 +41,9 @@ public class BuildAction extends AbstractAction {
 					}
 				});
 			} catch (IOException e) {
-				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの入出力にエラーが発生しました。\n"+e.getMessage());
+				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの入出力にエラーが発生しました。\n"+e.toString()+e.getMessage());
 			} catch (InterruptedException e) {
-				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "Nakloidが中断されました。\n"+e.getMessage());
+				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "Nakloidが中断されました。\n"+e.toString()+e.getMessage());
 			} finally {
 				coreData.nakloidIni.input.pitches_mode = NakloidIni.PitchesMode.pitches_mode_pit;
 				coreData.nakloidIni.output.path_output_pitches = null;

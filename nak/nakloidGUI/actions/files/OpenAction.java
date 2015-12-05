@@ -56,12 +56,12 @@ public class OpenAction extends AbstractAction {
 							fos.flush();
 						}
 					} catch (IOException e) {
-						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", entry.getName()+"の展開に失敗しました");
+						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", entry.getName()+"の展開に失敗しました\n"+e.toString()+e.getMessage());
 						return;
 					}
 				});
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.getMessage());
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.toString()+e.getMessage());
 		}
 		try {
 			coreData.synthesize(new CoreDataSynthesisListener() {
@@ -70,14 +70,14 @@ public class OpenAction extends AbstractAction {
 					try {
 						coreData.reloadScoreAndPitches();
 					} catch (IOException e) {
-						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.getMessage());
+						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.toString()+e.getMessage());
 					}
 				}
 			});
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.getMessage());
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.toString()+e.getMessage());
 		} catch (InterruptedException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "歌声合成時にエラーが発生しました。\n"+e.getMessage());
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "歌声合成時にエラーが発生しました。\n"+e.toString()+e.getMessage());
 		}
 	}
 }

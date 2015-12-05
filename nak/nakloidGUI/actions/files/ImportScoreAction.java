@@ -69,7 +69,7 @@ public class ImportScoreAction extends AbstractAction {
 						try {
 							coreData.reloadScoreAndPitches();
 						} catch (IOException e) {
-							MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "生成したファイルの読込に失敗しました。\n"+e.getMessage());
+							MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "生成したファイルの読込に失敗しました。\n"+e.toString()+e.getMessage());
 						}
 						coreData.reloadSongWaveform();
 					}
@@ -83,7 +83,7 @@ public class ImportScoreAction extends AbstractAction {
 			try {
 				Files.copy(pathImportScore, coreData.getScorePath(), StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
-				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルのコピーに失敗しました。\n"+e.getMessage());
+				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルのコピーに失敗しました。\n"+e.toString()+e.getMessage());
 			}
 		}
 	}

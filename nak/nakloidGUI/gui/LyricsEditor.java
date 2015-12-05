@@ -53,9 +53,9 @@ public class LyricsEditor extends Dialog {
 				coreData.saveScore();
 				coreData.synthesize(null);
 			} catch (IOException e) {
-				MessageDialog.openError(getShell(), "NakloidGUI", "歌詞の保存に失敗しました。\n"+e.getMessage());
+				MessageDialog.openError(getShell(), "NakloidGUI", "歌詞の保存に失敗しました。\n"+e.toString()+e.getMessage());
 			} catch (InterruptedException e) {
-				MessageDialog.openError(getShell(), "NakloidGUI", "歌声の合成に失敗しました。\n"+e.getMessage());
+				MessageDialog.openError(getShell(), "NakloidGUI", "歌声の合成に失敗しました。\n"+e.toString()+e.getMessage());
 			}
 		}
 		super.buttonPressed(buttonId);

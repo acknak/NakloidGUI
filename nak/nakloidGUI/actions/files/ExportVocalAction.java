@@ -66,7 +66,7 @@ public class ExportVocalAction extends AbstractAction {
 				}
 			}
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ボーカルのエクスポートに失敗しました。\n"+e.getMessage());
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ボーカルのエクスポートに失敗しました。\n"+e.toString()+e.getMessage());
 			return;
 		}
 		MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", (coreData.getVocalInfo()==null)?"ボーカル":coreData.getVocalInfo().getName()+"をエクスポートしました。");

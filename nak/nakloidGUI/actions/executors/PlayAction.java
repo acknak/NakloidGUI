@@ -41,7 +41,7 @@ public class PlayAction extends AbstractAction {
 								Display.getCurrent().timerExec(50, this);
 							}
 						} catch (UnsupportedAudioFileException|LineUnavailableException|IOException e) {
-							MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "Wavファイルの読み込みに失敗しました。\n"+e.getMessage());
+							MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "Wavファイルの読み込みに失敗しました。\n"+e.toString()+e.getMessage());
 						}
 					}
 				});

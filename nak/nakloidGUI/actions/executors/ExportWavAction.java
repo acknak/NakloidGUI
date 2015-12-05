@@ -39,7 +39,7 @@ public class ExportWavAction extends AbstractAction {
 			Files.deleteIfExists(pathExportWav);
 			Files.copy(pathWav, pathExportWav);
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイル操作に失敗しました。\n"+e.getMessage());
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイル操作に失敗しました。\n"+e.toString()+e.getMessage());
 		}
 	}
 }

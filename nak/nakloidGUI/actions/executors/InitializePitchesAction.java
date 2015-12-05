@@ -24,7 +24,7 @@ public class InitializePitchesAction extends AbstractAction {
 		try {
 			Files.deleteIfExists(tmpInputPath);
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ピッチ情報の削除に失敗しました。"+e.getMessage());
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ピッチ情報の削除に失敗しました。"+e.toString()+e.getMessage());
 			return;
 		}
 		if (coreData.getSongWaveform() != null) {
@@ -47,7 +47,7 @@ public class InitializePitchesAction extends AbstractAction {
 					try {
 						coreData.reloadPitches();
 					} catch (IOException e) {
-						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ピッチ情報の読込に失敗しました。\n"+e.getMessage());
+						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ピッチ情報の読込に失敗しました。\n"+e.toString()+e.getMessage());
 					}
 					coreData.reloadSongWaveform();
 				}
