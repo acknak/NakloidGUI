@@ -1,10 +1,12 @@
 package nak.nakloidGUI.gui;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -47,6 +49,14 @@ public class LyricsEditor extends Dialog {
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == IDialogConstants.OK_ID) {
 			coreData.setLyrics(Arrays.stream(text.getText().split(",")).map(PronunciationAlias::new).collect(Collectors.toList()));
+			try {
+				coreData.saveScore();
+				coreData.synthesize(null);
+			} catch (IOException e) {
+				MessageDialog.openError(getShell(), "NakloidGUI", "歌詞の保存に失敗しました。\n"+e.getMessage());
+			} catch (InterruptedException e) {
+				MessageDialog.openError(getShell(), "NakloidGUI", "歌声の合成に失敗しました。\n"+e.getMessage());
+			}
 		}
 		super.buttonPressed(buttonId);
 	}
