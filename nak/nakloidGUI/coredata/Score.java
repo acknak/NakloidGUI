@@ -130,7 +130,7 @@ public class Score {
 		int defaultFrontPadding = NakloidGUI.preferenceStore.getInt("ini.note.ms_front_padding");
 		int defaultBackPadding = NakloidGUI.preferenceStore.getInt("ini.note.ms_back_padding");
 		int defaultPadding = Math.max(defaultFrontPadding, defaultBackPadding);
-		notes.set(0, new Note.Builder(notes.get(0)).setFrontMargin(0).setFrontPadding(0).build());
+		notes.set(0, new Note.Builder(notes.get(0)).setFrontMargin(0).setFrontPadding(defaultFrontPadding).build());
 		for (int i=1; i<notes.size(); i++) {
 			Note tmpNote=notes.get(i), prevNote=notes.get(i-1);
 			Voice tmpVoice=vocal.getVoice(tmpNote.getPronunciationAlias()), prevVoice=vocal.getVoice(prevNote.getPronunciationAlias());
