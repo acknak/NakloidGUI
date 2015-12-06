@@ -134,7 +134,7 @@ public class Score {
 		for (int i=1; i<notes.size(); i++) {
 			Note tmpNote=notes.get(i), prevNote=notes.get(i-1);
 			Voice tmpVoice=vocal.getVoice(tmpNote.getPronunciationAlias()), prevVoice=vocal.getVoice(prevNote.getPronunciationAlias());
-			if (tmpNote.getPronunciationAlias().checkVCV() && tmpVoice!=null && tmpVoice.getOverlap()>0) {
+			if (tmpNote.getPronunciationAlias().checkVCV() && tmpVoice!=null && tmpVoice.getOverlap()>0 && prevVoice!=null) {
 				int msFadeStart = tmpNote.getStart() - tmpVoice.getPreutterance();
 				int msFadeEnd = msFadeStart + tmpVoice.getOverlap();
 				int msPrevConsStart = prevNote.getStart() - prevVoice.getPreutterance() + prevVoice.getConsonant();

@@ -45,6 +45,7 @@ final public class Note implements Comparable<Note> {
 			this.backPadding = note.back_padding;
 			this.baseVelocity = note.vel;
 			this.basePitch = note.pitch;
+			this.vel_points = new ArrayList<ArrayList<Long>>(note.vel_points);
 		}
 		@JsonProperty("id")
 		public Builder setId(int id) {
