@@ -182,7 +182,7 @@ public class VolumeView extends Canvas {
 		public void mouseDoubleClick(MouseEvent e) {
 			boolean deleteMode = false;
 			for (int i=0; i<note.getVelPointsSize(); i++) {
-				Rectangle tmpArea = new Rectangle(note.getVelPoint(i).get(0).intValue()-note.getFrontMargin()-2, areaHeight-note.getVelPoint(i).get(1).intValue()-2, 5, 5);
+				Rectangle tmpArea = new Rectangle(note.getVelPoint(i).get(0).intValue()+note.getFrontMargin()-2, areaHeight-note.getVelPoint(i).get(1).intValue()-2, 5, 5);
 				if (tmpArea.contains(e.x-offset, e.y)) {
 					for (VolumeViewListener volumeViewListener : volumeViewListeners) {
 						volumeViewListener.volumeViewDeleteVelPoint(note.getVelPoint(i).get(0).intValue());
