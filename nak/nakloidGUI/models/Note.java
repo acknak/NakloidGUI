@@ -2,6 +2,7 @@ package nak.nakloidGUI.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -255,12 +256,6 @@ final public class Note implements Comparable<Note> {
 
 	@JsonIgnore
 	public Note deleteVelPoint(long ms) {
-		List<ArrayList<Long>> tmpVelPoints = new ArrayList<ArrayList<Long>>();
-		for (ArrayList<Long> tmpVelPoint : vel_points) {
-			if (tmpVelPoint.get(0)!=ms && end-start-back_margin+tmpVelPoint.get(0)!=ms) {
-				tmpVelPoints.add(new ArrayList<Long>(tmpVelPoint));
-			}
-		}
-		return new Note.Builder(this).setVelPoints(tmpVelPoints).build();
+		return new Note.Builder(this).setVelPoints(vel_points.stream().filter(vp->vp.get(0)!=ms).collect(Collectors.toList())).build();
 	}
 }
