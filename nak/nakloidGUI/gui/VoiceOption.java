@@ -129,15 +129,17 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 				if (pmpOriginal.path != null) {
 					tmpPmp.save(pmpOriginal.path);
 				}
-				for (Path path : temporaryPaths) {
-					if (path != null) {
-						Files.deleteIfExists(path);
-					}
-				}
 				Files.deleteIfExists(tmpVoice.getUwcPath());
 				coreData.saveVoice(tmpVoice);
 			} catch (IOException e) {
 				MessageDialog.openError(getShell(), "NakloidGUI", "ファイル入出力に失敗しました。\n"+e.toString()+e.getMessage());
+			}
+		}
+		for (Path path : temporaryPaths) {
+			if (path != null) {
+				try {
+					Files.deleteIfExists(path);
+				} catch (IOException e) {}
 			}
 		}
 		super.buttonPressed(buttonId);
