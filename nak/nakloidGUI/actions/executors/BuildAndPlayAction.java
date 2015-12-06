@@ -1,6 +1,7 @@
 package nak.nakloidGUI.actions.executors;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
@@ -16,6 +17,15 @@ public class BuildAndPlayAction extends AbstractAction {
 	@Override
 	public void run() {
 		mainWindow.buildAction.run();
-		mainWindow.playAction.run();
+		Display.getCurrent().asyncExec(new Runnable () {
+			@Override
+			public void run() {
+				if (coreData.getSongWaveform().isLoaded()) {
+					mainWindow.playAction.run();
+				} else {
+					Display.getCurrent().timerExec(50, this);
+				}
+			}
+		});
 	}
 }

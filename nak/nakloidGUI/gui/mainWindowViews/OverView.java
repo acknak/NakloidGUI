@@ -166,7 +166,6 @@ public class OverView extends Canvas {
 			draggableRectangle.height = tmpArea.height;
 			if (draggableRectangle.contains(new Point(e.x, e.y))) {
 				if (waveform != null) {
-					waveform.pause();
 					isDragging = true;
 				}
 			}

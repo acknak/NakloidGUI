@@ -31,17 +31,17 @@ public class PlayAction extends AbstractAction {
 				coreData.getSongWaveform().pause();
 			} else {
 				isPlaying = true;
-				Display.getCurrent().timerExec(50, new Runnable () {
+				try {
+					coreData.getSongWaveform().play();
+				} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+					MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "Wavファイルの読み込みに失敗しました。\n"+e.toString()+e.getMessage());
+				}
+				Display.getCurrent().asyncExec(new Runnable () {
 					@Override
 					public void run() {
-						try {
-							mainWindow.waveformSeeked();
-							if (isPlaying) {
-								coreData.getSongWaveform().play();
-								Display.getCurrent().timerExec(50, this);
-							}
-						} catch (UnsupportedAudioFileException|LineUnavailableException|IOException e) {
-							MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "Wavファイルの読み込みに失敗しました。\n"+e.toString()+e.getMessage());
+						mainWindow.waveformSeeked();
+						if (isPlaying) {
+							Display.getCurrent().timerExec(50, this);
 						}
 					}
 				});

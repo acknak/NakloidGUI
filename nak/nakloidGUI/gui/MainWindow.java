@@ -376,7 +376,6 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 				if (coreData.getSongWaveform().isLoaded()) {
 					overView.redraw(coreData.getSongWaveform(), mainView.getClientArea().width, mainView.getOffset().x, getMsByPixel());
 					mainView.redraw();
-					overView.update();
 					return;
 				}
 				showWaveformStatus("歌声の生成に失敗しました");
