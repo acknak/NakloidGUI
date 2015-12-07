@@ -73,8 +73,8 @@ public class NakloidIni {
 		public double xcorr_threshold = NakloidGUI.preferenceStore.getDouble("ini.pitchmark.xcorr_threshold");
 	}
 	public class Overlap {
-		public boolean stretch_self_fade = NakloidGUI.preferenceStore.getBoolean("ini.overlap.uwc_normalize");
-		public long ms_self_fade = NakloidGUI.preferenceStore.getLong("ini.pitchmark.ms_self_fade");
+		public boolean stretch_self_fade = NakloidGUI.preferenceStore.getBoolean("ini.overlap.stretch_self_fade");
+		public long ms_self_fade = NakloidGUI.preferenceStore.getLong("ini.overlap.ms_self_fade");
 		public boolean interpolation = NakloidGUI.preferenceStore.getBoolean("ini.overlap.interpolation");
 		public boolean overlap_normalize = NakloidGUI.preferenceStore.getBoolean("ini.overlap.overlap_normalize");
 		public boolean window_modification = NakloidGUI.preferenceStore.getBoolean("ini.overlap.window_modification");
