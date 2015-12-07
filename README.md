@@ -10,7 +10,7 @@ required
 
 license
 ----------
-Nakloid is released under the [BSD 3-Clause License](http://opensource.org/licenses/BSD-3-Clause)
+NakloidGUI is released under the [BSD 3-Clause License](http://opensource.org/licenses/BSD-3-Clause)
 
 see also
 ------
