@@ -1,17 +1,22 @@
 package nak.nakloidGUI.gui.preferencePages.ini;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 
 import nak.nakloidGUI.NakloidGUI;
-import nak.nakloidGUI.gui.preferencePages.DoubleFieldEditor;
 
 public class OverlapPage extends FieldEditorPreferencePage {
+	Group grpSelfFadeStretch=null;
+	IntegerFieldEditor ifeMsSelfFade=null;
+
 	public OverlapPage() {
 		super(FieldEditorPreferencePage.GRID);
 		setTitle("オーバーラップ");
@@ -26,16 +31,19 @@ public class OverlapPage extends FieldEditorPreferencePage {
 		container.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		container.setLayout(new GridLayout());
 		{
-			IntegerFieldEditor field = new IntegerFieldEditor("ini.overlap.ms_self_fade", "自己フェード周期(ms)", container, 4);
-			field.setValidRange(1, 9999);
-			field.setErrorMessage("正の整数を入力して下さい");
+			grpSelfFadeStretch = new Group(container, SWT.NONE);
+			grpSelfFadeStretch.setText("自己フェード伸縮");
+			GridData data = new GridData(GridData.FILL_BOTH);
+			grpSelfFadeStretch.setLayoutData(data);
+			BooleanFieldEditor field = new BooleanFieldEditor("ini.overlap.stretch_self_fade", "自己フェード時の伸縮処理を有効にする", grpSelfFadeStretch);
 			addField(field);
-		}
-		{
-			DoubleFieldEditor field = new DoubleFieldEditor("ini.overlap.self_fade_stretch_scale", "自己フェード時の伸縮処置を有効にする", container);
-			field.setValidRange(0.001, 99999);
-			field.setErrorMessage("正の実数を入力して下さい");
-			addField(field);
+			{
+				ifeMsSelfFade = new IntegerFieldEditor("ini.overlap.ms_self_fade", "自己フェード周期(ms)", grpSelfFadeStretch, 4);
+				ifeMsSelfFade.setValidRange(1, 9999);
+				ifeMsSelfFade.setErrorMessage("正の整数を入力して下さい");
+				ifeMsSelfFade.setEnabled(NakloidGUI.preferenceStore.getBoolean("ini.overlap.stretch_self_fade"), grpSelfFadeStretch);
+				addField(ifeMsSelfFade);
+			}
 		}
 		{
 			BooleanFieldEditor field = new BooleanFieldEditor("ini.overlap.interpolation", "合成時の補間処理を有効にする", container);
@@ -48,6 +56,16 @@ public class OverlapPage extends FieldEditorPreferencePage {
 		{
 			BooleanFieldEditor field = new BooleanFieldEditor("ini.overlap.window_modification", "合成ピッチに合わせた窓関数変形を有効にする", container);
 			addField(field);
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		super.propertyChange(event);
+		if (((FieldEditor)event.getSource()).getPreferenceName().equals("ini.overlap.stretch_self_fade")) {
+			if (ifeMsSelfFade != null) {
+				ifeMsSelfFade.setEnabled((boolean)event.getNewValue(), grpSelfFadeStretch);
+			}
 		}
 	}
 }

@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.Text;
 
 import nak.nakloidGUI.coredata.CoreData;
 import nak.nakloidGUI.coredata.CoreData.CoreDataSynthesisListener;
+import nak.nakloidGUI.coredata.NakloidIni;
 import nak.nakloidGUI.gui.voiceOptionViews.OverView;
 import nak.nakloidGUI.gui.voiceOptionViews.SongView;
 import nak.nakloidGUI.gui.voiceOptionViews.VoiceView;
@@ -594,6 +595,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 			tmpCoreData.nakloidIni.input.path_singer = Paths.get("temporary");
 			temporaryPaths.add(Paths.get("temporary", "oto.ini"));
 			tmpCoreData.nakloidIni.input.path_input_pitches = null;
+			tmpCoreData.nakloidIni.input.pitches_mode = NakloidIni.PitchesMode.pitches_mode_none;
 			tmpCoreData.nakloidIni.output.path_song = Files.createTempFile(Paths.get("temporary"), "VoiceOption.synthesis.", "");
 			temporaryPaths.add(tmpCoreData.nakloidIni.output.path_song);
 			tmpCoreData.nakloidIni.output.ms_margin = 100;
