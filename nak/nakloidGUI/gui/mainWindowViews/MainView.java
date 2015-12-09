@@ -194,9 +194,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 		margin = (int)((double)coreData.nakloidIni.output.ms_margin/msByPixel);
 		viewSize.x = (int)(((double)coreData.getScoreLength())/msByPixel)+margin;
 		viewSize.y = (getMidiNoteUpperLimit()-getMidiNoteLowerLimit()+1)*noteHeight;
-		offset.x = offset.y = 0;
 		reloadScrollBarsBaseData();
-		scroll(0, 0, 0, 0, 0, 0, true);
 	}
 
 	@Override
