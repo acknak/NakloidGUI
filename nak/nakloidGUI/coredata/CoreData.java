@@ -197,10 +197,11 @@ public class CoreData {
 	public void reloadVocal() throws IOException {
 		if (nakloidIni.input.path_singer!=null && nakloidIni.input.path_singer.toFile().isDirectory()) {
 			vocal = new Vocal(nakloidIni.input.path_singer);
-			wfSong = null;
-			score.resetNotesBorder(vocal);
 			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateVocal);
+			wfSong = null;
 			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateSongWaveform);
+			score.resetNotesBorder(vocal);
+			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 		}
 	}
 
@@ -237,7 +238,6 @@ public class CoreData {
 
 	public void savePitches(Path pathPitches) throws IOException {
 		pitches.save(pathPitches);
-		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
 	}
 
 	public List<Note> getNotes() {
