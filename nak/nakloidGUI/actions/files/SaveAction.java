@@ -58,6 +58,9 @@ public class SaveAction extends AbstractAction {
 					zos.write(buf, 0, len);
 				}
 			}
+			NakloidGUI.preferenceStore.setValue("workspace.is_saved", true);
+			NakloidGUI.preferenceStore.save();
+			mainWindow.updateWindowName();
 		} catch (IOException e) {
 			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイル入出力に失敗しました。\n"+e.toString()+e.getMessage());
 		} finally {

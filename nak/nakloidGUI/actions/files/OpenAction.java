@@ -63,6 +63,8 @@ public class OpenAction extends AbstractAction {
 		} catch (IOException e) {
 			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.toString()+e.getMessage());
 		}
+		NakloidGUI.preferenceStore.setValue("workspace.is_saved", true);
+		mainWindow.updateWindowName();
 		try {
 			coreData.synthesize(new CoreDataSynthesisListener() {
 				@Override

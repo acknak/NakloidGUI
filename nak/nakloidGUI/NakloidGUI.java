@@ -41,6 +41,7 @@ public class NakloidGUI {
 	public static void initializePreferenceValue() {
 		preferenceStore = new PreferenceStore("nakloidGUI.properties");
 		preferenceStore.setDefault("workspace.path_nar", "");
+		preferenceStore.setDefault("workspace.is_saved", false);
 		preferenceStore.setDefault("ini.input.path_input_score", "./temporary/score.nak");
 		preferenceStore.setDefault("ini.input.score_mode", "nak");
 		preferenceStore.setDefault("ini.input.track", 1);

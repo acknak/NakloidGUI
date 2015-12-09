@@ -1,5 +1,6 @@
 package nak.nakloidGUI.gui;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -192,7 +193,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	@Override
 	protected final void configureShell(Shell shell) {
 		super.configureShell(shell);
-		shell.setText("NakloidGUI");
+		shell.setText(getWindowName());
 		Image[] images = new Image[5];
 		images[0] = loadImage("icon16.png");
 		images[1] = loadImage("icon32.png");
@@ -345,12 +346,22 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	public void updateScore() {
 		mainView.redraw();
 		mainView.update();
+		try {
+			NakloidGUI.preferenceStore.setValue("workspace.is_saved", false);
+			NakloidGUI.preferenceStore.save();
+			updateWindowName();
+		} catch (IOException e) {}
 	}
 
 	@Override
 	public void updatePitches() {
 		mainView.redraw();
 		mainView.update();
+		try {
+			NakloidGUI.preferenceStore.setValue("workspace.is_saved", false);
+			NakloidGUI.preferenceStore.save();
+			updateWindowName();
+		} catch (IOException e) {}
 	}
 
 	@Override
@@ -512,5 +523,28 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 
 	private Image loadImage(String filename) {
 		return ImageDescriptor.createFromURL(getClass().getResource(filename)).createImage();
+	}
+
+	private String getWindowName() {
+		String windowName = " - NakloidGUI";
+		String fileName = NakloidGUI.preferenceStore.getString("workspace.path_nar");
+		if (fileName!=null && !fileName.isEmpty()) {
+			windowName = Paths.get(fileName).toFile().getName()
+					+ (NakloidGUI.preferenceStore.getBoolean("workspace.is_saved")?"":"*")
+					+ windowName;
+		} else {
+			windowName = "（無題）*" + windowName;
+			try {
+				NakloidGUI.preferenceStore.setValue("workspace.is_saved", false);
+				NakloidGUI.preferenceStore.save();
+			} catch (IOException e) {}
+		}
+		return windowName;
+	}
+
+	public void updateWindowName() {
+		if (getShell() != null) {
+			getShell().setText(getWindowName());
+		}
 	}
 }
