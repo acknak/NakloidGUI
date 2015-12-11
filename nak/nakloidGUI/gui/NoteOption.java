@@ -39,6 +39,9 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.coreData = coreData;
 		this.note = tmpNote = note;
+		if (coreData.getVoice(note.getPronunciationAlias())==null) {
+			MessageDialog.openInformation(getShell(), "NakloidGUI", "「"+note.getPronunciationAliasString()+"」は存在しない発音です。");
+		}
 	}
 
 	@Override

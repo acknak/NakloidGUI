@@ -92,16 +92,23 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 		Files.copy(voice.getPmpPath(), pathPmpTemporary, StandardCopyOption.REPLACE_EXISTING);
 		temporaryPaths.add(pathPmpTemporary);
 		if (voice.isVCV()) {
-			voicePrefix = coreData.getVoice(tmpVoice.getPronunciationAlias().getPrefixPron()+tmpVoice.getPronunciationAlias().getSuffix());
-			Path prefixVoicePath = Paths.get("temporary", voicePrefix.getWavPath().getFileName().toString());
-			Files.copy(voicePrefix.getWavPath(), prefixVoicePath, StandardCopyOption.REPLACE_EXISTING);
-			temporaryPaths.add(prefixVoicePath);
-			if (!Files.exists(voicePrefix.getPmpPath())) {
-				coreData.makePmp(voicePrefix.getPronunciationString());
+			Voice tmpPreVoice;
+			if ((tmpPreVoice=coreData.getVoice("- " + tmpVoice.getPronunciationAlias().getPrefixPron()+tmpVoice.getPronunciationAlias().getSuffix())) == null) {
+				tmpPreVoice = coreData.getVoice(tmpVoice.getPronunciationAlias().getPrefixPron()+tmpVoice.getPronunciationAlias().getSuffix());
 			}
-			Path prefixVoicePmpPath = Paths.get("temporary", voicePrefix.getPmpPath().getFileName().toString());
-			Files.copy(voicePrefix.getPmpPath(), prefixVoicePmpPath, StandardCopyOption.REPLACE_EXISTING);
-			temporaryPaths.add(prefixVoicePmpPath);
+			if ((voicePrefix=tmpPreVoice)!=null) {
+				Path prefixVoicePath = Paths.get("temporary", voicePrefix.getWavPath().getFileName().toString());
+				Files.copy(voicePrefix.getWavPath(), prefixVoicePath, StandardCopyOption.REPLACE_EXISTING);
+				temporaryPaths.add(prefixVoicePath);
+				if (!Files.exists(voicePrefix.getPmpPath())) {
+					coreData.makePmp(voicePrefix.getPronunciationString());
+				}
+				Path prefixVoicePmpPath = Paths.get("temporary", voicePrefix.getPmpPath().getFileName().toString());
+				Files.copy(voicePrefix.getPmpPath(), prefixVoicePmpPath, StandardCopyOption.REPLACE_EXISTING);
+				temporaryPaths.add(prefixVoicePmpPath);
+			} else {
+				MessageDialog.openError(getShell(), "NakloidGUI", "「"+tmpPreVoice.getPronunciationString()+"」は存在しない発音です。");
+			}
 		} else {
 			voicePrefix = null;
 		}
@@ -567,6 +574,9 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 		tmpCoreData.setVoice(tmpVoice);
 		if (tmpVoice.isVCV()) {
 			Voice tmpPreVoice = coreData.getVoice(tmpVoice.getPronunciationAlias().getPrefixPron()+tmpVoice.getPronunciationAlias().getSuffix());
+			if (tmpPreVoice==null) {
+				tmpPreVoice = coreData.getVoice("- "+tmpVoice.getPronunciationAlias().getPrefixPron()+tmpVoice.getPronunciationAlias().getSuffix());
+			}
 			tmpCoreData.setVoice(tmpPreVoice);
 			Note prefix_note = new Note.Builder(1)
 					.setPronunciationAlias(tmpPreVoice.getPronunciationString())
