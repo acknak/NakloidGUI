@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -294,11 +293,9 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 					btnRemakePmp.addSelectionListener(new SelectionAdapter(){
 						public void widgetSelected(SelectionEvent e){
 							reloadPmpFileWithNakloid();
-							voiceView.redraw(pmpOriginal);
+							voiceView.redraw(tmpPmp);
 							updateTxtPmp();
-							MessageBox box1 = new MessageBox(parent.getShell(), SWT.OK);
-							box1.setMessage("Nakloidでピッチマークを再計算しました");
-							box1.open();
+							MessageDialog.openInformation(parent.getShell(), "NakloidGUI", "Nakloidでピッチマークを再計算しました");
 						}
 					});
 				}
@@ -393,8 +390,20 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 
 	private void reloadPmpFileWithNakloid() {
 		try {
-			coreData.makePmp(tmpVoice.getPronunciationString());
-			tmpPmp = new Pmp.Builder(tmpVoice).build();
+			if (Files.exists(tmpVoice.getFrqPath())) {
+				Files.copy(tmpVoice.getFrqPath(), Paths.get("temporary", tmpVoice.getFrqPath().getFileName().toString()));
+				temporaryPaths.add(Paths.get("temporary", tmpVoice.getFrqPath().getFileName().toString()));
+			}
+			tmpCoreData = new CoreData.Builder().build();
+			tmpCoreData.setVoice(tmpVoice);
+			Files.deleteIfExists(tmpVoice.getUwcPath());
+			tmpCoreData.nakloidIni.input.path_singer = Paths.get("temporary");
+			temporaryPaths.add(Paths.get("temporary", "oto.ini"));
+			tmpCoreData.nakloidIni.input.pitches_mode = NakloidIni.PitchesMode.pitches_mode_none;
+			temporaryPaths.add(tmpCoreData.nakloidIni.output.path_song);
+			tmpCoreData.saveVocal(pathOtoIniTemporary);
+			tmpCoreData.makePmp(tmpVoice.getPronunciationString());
+			tmpPmp = new Pmp.Builder(pathPmpTemporary).build();
 		} catch (IOException e) {
 			MessageDialog.openError(getShell(), "NakloidGUI", "ピッチマークの再読込に失敗しました。\n"+e.toString()+e.getMessage());
 		}

@@ -170,4 +170,8 @@ final public class Voice implements Comparable<Voice> {
 	public Path getUwcPath() {
 		return Paths.get(pathWav.getParent().toString(), pronunciation.getAliasString().replace("*","_")+".uwc");
 	}
+
+	public Path getFrqPath() {
+		return Paths.get(pathWav.toString().replace(".wav","_wav")+".frq");
+	}
 }

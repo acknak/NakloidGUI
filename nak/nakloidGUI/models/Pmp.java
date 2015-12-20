@@ -69,6 +69,19 @@ final public class Pmp {
 				prefixVowelWav = new VowelWav(pmp.prefixVowelWav.filename, pmp.prefixVowelWav.from, pmp.prefixVowelWav.to);
 			}
 		}
+		public Builder(Path path) throws IOException {
+			this.path = path;
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			try (InputStream is = Files.newInputStream(this.path)) {
+				Pmp pmp = mapper.readValue(is, Pmp.class);
+				subFadeStart = pmp.subFadeStart;
+				basePitch = pmp.basePitch;
+				pitchmarkPoints = pmp.pitchmarkPoints;
+				baseVowelWav = new VowelWav(pmp.baseVowelWav.filename, pmp.baseVowelWav.from, pmp.baseVowelWav.to);
+				prefixVowelWav = new VowelWav(pmp.prefixVowelWav.filename, pmp.prefixVowelWav.from, pmp.prefixVowelWav.to);
+			}
+		}
 		public Builder(Pmp pmp) {
 			this.subFadeStart = pmp.subFadeStart;
 			this.basePitch = pmp.basePitch;
