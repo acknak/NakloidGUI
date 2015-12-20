@@ -334,8 +334,7 @@ public class CoreData {
 		nakloidIni.save();
 		System.out.println(sdf.format(System.currentTimeMillis()));
 		pathSynthStdout = Files.createTempFile(Paths.get("temporary"), "CoreData.synthesize.", "");
-		ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "Nakloid.exe", "-v", ">", pathSynthStdout.toAbsolutePath().toString());
-		pb.redirectErrorStream(true);
+		ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "Nakloid.exe", "-v", ">", pathSynthStdout.toAbsolutePath().toString(), "2>&1");
 		Process process = pb.start();
 		BufferedReader br = Files.newBufferedReader(pathSynthStdout, Charset.forName("Shift_JIS"));
 		Display.getCurrent().asyncExec(new Runnable() {
@@ -378,8 +377,7 @@ public class CoreData {
 		nakloidIni.save();
 		System.out.println(sdf.format(System.currentTimeMillis()));
 		pathAllPmpStdout = Files.createTempFile(Paths.get("temporary"), "CoreData.makeAllPmp.", "");
-		ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "Nakloid.exe", "-ac", "-pmp", ">", pathAllPmpStdout.toAbsolutePath().toString());
-		pb.redirectErrorStream(true);
+		ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "Nakloid.exe", "-ac", "-pmp", ">", pathAllPmpStdout.toAbsolutePath().toString(), "2>&1");
 		Process process = pb.start();
 		BufferedReader br = Files.newBufferedReader(pathAllPmpStdout, Charset.forName("Shift_JIS"));
 		Display.getCurrent().asyncExec(new Runnable() {
