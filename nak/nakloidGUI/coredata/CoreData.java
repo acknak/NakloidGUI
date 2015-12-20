@@ -373,7 +373,7 @@ public class CoreData {
 		}
 	}
 
-	public void makeAllPmp() throws IOException {
+	public void makeAllPmp(CoreDataSynthesisListener cdsl) throws IOException {
 		nakloidIni.save();
 		System.out.println(sdf.format(System.currentTimeMillis()));
 		pathAllPmpStdout = Files.createTempFile(Paths.get("temporary"), "CoreData.makeAllPmp.", "");
@@ -392,7 +392,12 @@ public class CoreData {
 					try {
 						br.close();
 						Files.deleteIfExists(pathAllPmpStdout);
-					} catch (IOException e) {}
+					} catch (IOException e) {
+					} finally {
+						if (cdsl != null) {
+							cdsl.synthesisFinished();
+						}
+					}
 				}
 			}
 		});

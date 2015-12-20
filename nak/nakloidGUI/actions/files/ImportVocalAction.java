@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
+import nak.nakloidGUI.coredata.CoreData.CoreDataSynthesisListener;
 import nak.nakloidGUI.gui.MainWindow;
 
 public class ImportVocalAction extends AbstractAction {
@@ -89,14 +90,20 @@ public class ImportVocalAction extends AbstractAction {
 			}
 			try {
 				if (MessageDialog.openQuestion(mainWindow.getShell(), "Nakloid GUI", "ピッチマークファイルを新規に生成しますか？")) {
-					coreData.makeAllPmp();
+					coreData.makeAllPmp(new CoreDataSynthesisListener() {
+						@Override
+						public void synthesisFinished() {
+							MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", strPath+"をインポートしました。");
+						}
+					});
+				} else {
+					MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", strPath+"をインポートしました。");
 				}
 				coreData.reloadVocal();
 			} catch (IOException e) {
 				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ボーカルの読み込みに失敗しました。\n"+e.toString()+e.getMessage());
 				return;
 			}
-			MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", strPath+"をインポートしました。");
 		}
 	}
 }
