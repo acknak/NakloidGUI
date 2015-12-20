@@ -31,6 +31,11 @@ public class OverView extends Canvas {
 		addPaintListener(canvasListener);
 	}
 
+	public void redraw(Voice voice) {
+		this.voice = voice;
+		redraw();
+	}
+
 	public void redraw(int voiceViewWitdh, int voiceViewOffset) {
 		if (!this.isDisposed()) {
 			this.voiceViewWidth = voiceViewWitdh;

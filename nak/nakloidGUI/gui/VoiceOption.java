@@ -430,7 +430,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 			tmpText.addKeyListener(new KeyAdapter(){
 				public void keyReleased(KeyEvent e) {
 					tmpVoice = new Voice.Builder(tmpVoice).offset(Short.valueOf(((Text)e.getSource()).getText())).build();
-					overView.redraw();
+					overView.redraw(tmpVoice);
 				}
 			});
 		} else if (type == ParameterType.OVERLAP) {
@@ -439,7 +439,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 			tmpText.addKeyListener(new KeyAdapter() {
 				public void keyReleased(KeyEvent e) {
 					tmpVoice = new Voice.Builder(tmpVoice).overlap(Short.valueOf(((Text)e.getSource()).getText())).build();
-					overView.redraw();
+					overView.redraw(tmpVoice);
 				}
 			});
 		} else if (type == ParameterType.PREUTTERANCE) {
@@ -448,7 +448,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 			tmpText.addKeyListener(new KeyAdapter(){
 				public void keyReleased(KeyEvent e) {
 					tmpVoice = new Voice.Builder(tmpVoice).preutterance(Short.valueOf(((Text)e.getSource()).getText())).build();
-					overView.redraw();
+					overView.redraw(tmpVoice);
 				}
 			});
 		} else if (type == ParameterType.CONSONANT) {
@@ -457,7 +457,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 			tmpText.addKeyListener(new KeyAdapter(){
 				public void keyReleased(KeyEvent e) {
 					tmpVoice = new Voice.Builder(tmpVoice).consonant(Short.valueOf(((Text)e.getSource()).getText())).build();
-					overView.redraw();
+					overView.redraw(tmpVoice);
 				}
 			});
 		} else if (type == ParameterType.BLANK) {
@@ -466,7 +466,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 			tmpText.addKeyListener(new KeyAdapter(){
 				public void keyReleased(KeyEvent e) {
 					tmpVoice = new Voice.Builder(tmpVoice).blank(Short.valueOf(((Text)e.getSource()).getText())).build();
-					overView.redraw();
+					overView.redraw(tmpVoice);
 				}
 			});
 		}
