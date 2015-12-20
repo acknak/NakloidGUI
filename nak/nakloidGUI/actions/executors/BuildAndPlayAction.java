@@ -20,6 +20,9 @@ public class BuildAndPlayAction extends AbstractAction {
 		Display.getCurrent().asyncExec(new Runnable () {
 			@Override
 			public void run() {
+				if (coreData.getSongWaveform() == null) {
+					return;
+				}
 				if (coreData.getSongWaveform().isLoaded()) {
 					mainWindow.playAction.run();
 				} else {
