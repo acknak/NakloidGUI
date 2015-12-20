@@ -148,7 +148,7 @@ public class Vocal {
 			sb.append(",");
 			sb.append(voice.getPreutterance());
 			sb.append(",");
-			sb.append(voice.getPreutterance());
+			sb.append(voice.getOverlap());
 			sb.append("\n");
 		}
 		for(Path otoIniPath : otoIniPaths) {
@@ -180,7 +180,7 @@ public class Vocal {
 						sb.append(",");
 						sb.append(voice.getPreutterance());
 						sb.append(",");
-						sb.append(voice.getPreutterance());
+						sb.append(voice.getOverlap());
 						sb.append("\n");
 					} else {
 						sb.append(s);
@@ -215,7 +215,7 @@ public class Vocal {
 				sb.append(",");
 				sb.append(voice.getPreutterance());
 				sb.append(",");
-				sb.append(voice.getPreutterance());
+				sb.append(voice.getOverlap());
 				sb.append("\n");
 			}
 			bw.write(sb.toString());
