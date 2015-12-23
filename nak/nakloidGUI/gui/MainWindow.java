@@ -119,11 +119,11 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		try {
 			NakloidGUI.preferenceStore.load();
 		} catch (IOException e) {
-			sb.append("設定ファイルが読み込めませんでした。デフォルトに戻します。");
+			sb.append("設定ファイルが読み込めませんでした。デフォルトに戻します。\n");
 			try {
 				NakloidGUI.preferenceStore.save();
 			} catch (IOException e1) {
-				sb.append("設定ファイルを保存できませんでした。設定は次回起動時にデフォルトに戻されます。");
+				sb.append("設定ファイルを保存できませんでした。設定は次回起動時にデフォルトに戻されます。\n");
 			}
 		}
 		CoreData.Builder cdb = new CoreData.Builder();
