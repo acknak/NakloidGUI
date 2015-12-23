@@ -58,7 +58,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 	private Voice tmpVoice;
 	private final Pmp pmpOriginal;
 	private Pmp tmpPmp;
-	private Text txtOffset, txtOverlap, txtPreutterance, txtConsonant, txtBlank, txtMusicalScale;
+	private Text txtOffset, txtOverlap, txtPreutterance, txtConsonant, txtBlank, txtMusicalScale, txtRepeatPoint;
 	private OverView overView;
 	private VoiceView voiceView;
 	private SongView songView;
@@ -215,7 +215,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 				{
 					Label lbRepeatPoint = new Label(cntPmpRepeatPoint, SWT.NONE);
 					lbRepeatPoint.setText("フェード開始点");
-					Text txtRepeatPoint = new Text(cntPmpRepeatPoint, SWT.BORDER|SWT.RIGHT);
+					txtRepeatPoint = new Text(cntPmpRepeatPoint, SWT.BORDER|SWT.RIGHT);
 					txtRepeatPoint.setText(String.valueOf(pmpOriginal.getSubFadeStart()));
 					txtRepeatPoint.setLayoutData(new RowData(40,12));
 					txtRepeatPoint.addModifyListener(new ModifyListener() {
@@ -294,6 +294,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 						public void widgetSelected(SelectionEvent e){
 							reloadPmpFileWithNakloid();
 							voiceView.redraw(tmpPmp);
+							txtRepeatPoint.setText(String.valueOf(tmpPmp.getSubFadeStart()));
 							updateTxtPmp();
 							MessageDialog.openInformation(parent.getShell(), "NakloidGUI", "Nakloidでピッチマークを再計算しました");
 						}
