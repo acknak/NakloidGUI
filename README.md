@@ -11,6 +11,7 @@ required
 license
 ----------
 Copyright (c) 2015 acknak
+
 This software is released under the MIT License.
 
 see also
