@@ -38,6 +38,8 @@ public class NakloidGUI {
 			mainWindow.setBlockOnOpen(true);
 			mainWindow.open();
 			Display.getCurrent().dispose();
+		} finally {
+			Files.deleteIfExists(Paths.get("lock"));
 		}
 	}
 
