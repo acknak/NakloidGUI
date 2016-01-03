@@ -21,6 +21,10 @@ public class NakloidGUI {
 	public static PreferenceStore preferenceStore;
 
 	public static void main(String[] args) throws IOException {
+		if (Files.notExists(Paths.get("Nakloid.exe"))) {
+			JOptionPane.showMessageDialog(new JPanel(), "\"Nakloid.exe\"が見つかりません。", "NakloidGUI", JOptionPane.ERROR_MESSAGE);
+			System.exit(0);
+		}
 		File lockFile = new File("lock");
 		try (FileChannel fc=FileChannel.open(lockFile.toPath(),StandardOpenOption.WRITE,StandardOpenOption.CREATE); FileLock lock=fc.tryLock()) {
 			if (lock == null) {
