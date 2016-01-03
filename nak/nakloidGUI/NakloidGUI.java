@@ -9,6 +9,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.stream.Stream;
 
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.swt.widgets.Display;
 
@@ -19,10 +22,10 @@ public class NakloidGUI {
 
 	public static void main(String[] args) throws IOException {
 		File lockFile = new File("lock");
-		try (FileChannel fc = FileChannel.open(lockFile.toPath(), StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-				FileLock lock = fc.tryLock()) {
+		try (FileChannel fc=FileChannel.open(lockFile.toPath(),StandardOpenOption.WRITE,StandardOpenOption.CREATE); FileLock lock=fc.tryLock()) {
 			if (lock == null) {
-				throw new RuntimeException("Nakloid GUI does NOT support multi launch.");
+				JOptionPane.showMessageDialog(new JPanel(), "NakloidGUIは二重起動をサポートしていません。", "NakloidGUI", JOptionPane.ERROR_MESSAGE);
+				System.exit(0);
 			}
 			try (Stream<Path> pathStream = Files.walk(Paths.get("temporary"))) {
 				pathStream.filter(p->!p.getFileName().toString().equals("score.nak"))
