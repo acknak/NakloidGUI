@@ -223,6 +223,10 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 				gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_GRAY));
 				gcImage.drawLine(offset.x, (i+1)*noteHeight+offset.y, viewSize.x+offset.x, (i+1)*noteHeight+offset.y);
 			}
+			if (clientArea.width > viewSize.x) {
+				gcImage.setBackground(e.display.getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+				gcImage.fillRectangle(new Rectangle(viewSize.x, 0, clientArea.width-viewSize.x, clientArea.height));
+			}
 
 			// draw notes
 			for (Note tmpNote : coreData.getNotes()) {
