@@ -70,7 +70,6 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 	final private Path pathOtoIniTemporary, pathVoiceTemporary, pathPmpTemporary;
 	private Set<Path> temporaryPaths = new HashSet<Path>();
 
-
 	protected VoiceOption(Shell shell, CoreData coreData , Voice voice) throws IOException {
 		super(shell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
