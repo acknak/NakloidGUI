@@ -138,12 +138,14 @@ public class OverView extends Canvas {
 				for (int i=0; i<tmpArea.width-1; i++) {
 					gcImage.drawLine(i, waveformPoints[i][0], i, waveformPoints[i][1]);
 				}
-				gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_MAGENTA));
-				gcImage.drawRectangle(
-						(int)(ms2point(-mainViewOffset*msByPixel)/(waveform.getDataSize()/(double)tmpArea.width)),
-						0,
-						(int)(ms2point(mainViewWidth*msByPixel)/(waveform.getDataSize()/(double)tmpArea.width)),
-						tmpArea.height-1);
+				if (ms2point(mainViewWidth*msByPixel)/(waveform.getDataSize()/(double)tmpArea.width) < tmpArea.width) {
+					gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_MAGENTA));
+					gcImage.drawRectangle(
+							(int)(ms2point(-mainViewOffset*msByPixel)/(waveform.getDataSize()/(double)tmpArea.width)),
+							0,
+							(int)(ms2point(mainViewWidth*msByPixel)/(waveform.getDataSize()/(double)tmpArea.width)),
+							tmpArea.height-1);
+				}
 				gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_MAGENTA));
 				gcImage.setBackground(e.display.getSystemColor(SWT.COLOR_DARK_MAGENTA));
 				if (waveform.isPlaying()) {

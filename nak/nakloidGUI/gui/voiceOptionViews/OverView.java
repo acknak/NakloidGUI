@@ -110,12 +110,14 @@ public class OverView extends Canvas {
 					gcImage.drawLine(i, waveformPoints[i][0], i, waveformPoints[i][1]);
 				}
 
-				gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_MAGENTA));
-				gcImage.drawRectangle(
-						(int)(-voiceViewOffset/(waveform.getDataSize()/(double)tmpArea.width)),
-						0,
-						(int)(voiceViewWidth/(waveform.getDataSize()/(double)tmpArea.width)),
-						tmpArea.height-1);
+				if (voiceViewWidth/(waveform.getDataSize()/(double)tmpArea.width) < tmpArea.width) {
+					gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_MAGENTA));
+					gcImage.drawRectangle(
+							(int)(-voiceViewOffset/(waveform.getDataSize()/(double)tmpArea.width)),
+							0,
+							(int)(voiceViewWidth/(waveform.getDataSize()/(double)tmpArea.width)),
+							tmpArea.height-1);
+				}
 
 				int offsetPoint = ms2point(msOffset,tmpArea.width);
 				gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_GRAY));
