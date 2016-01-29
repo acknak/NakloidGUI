@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -37,7 +38,7 @@ public class ExportWavAction extends AbstractAction {
 		Path pathWav = coreData.nakloidIni.output.path_song;
 		try {
 			Files.deleteIfExists(pathExportWav);
-			Files.copy(pathWav, pathExportWav);
+			Files.copy(pathWav, pathExportWav, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイル操作に失敗しました。\n"+e.toString()+e.getMessage());
 		}
