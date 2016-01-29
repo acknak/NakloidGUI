@@ -75,16 +75,17 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.coreData = coreData;
 
-		this.voiceOriginal = tmpVoice = voice;
-		if (!Files.exists(voice.getPmpPath())) {
-			reloadPmpFileWithNakloid();
-		}
-		pmpOriginal = tmpPmp = new Pmp.Builder(voice).build();
 		wfBase = wfSong = wfPmpTeacher = wfPmpPrefixTeacher = Optional.empty();
 		pathOtoIniTemporary = Paths.get("temporary","oto.ini");
 		pathPmpTemporary = Paths.get("temporary", voice.getPmpPath().getFileName().toString());
 		pathVoiceTemporary = Paths.get("temporary", voice.getWavPath().getFileName().toString());
 
+		this.voiceOriginal = tmpVoice = voice;
+		if (!Files.exists(voice.getPmpPath())) {
+			reloadPmpFileWithNakloid();
+			Files.copy(pathPmpTemporary, voice.getPmpPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+		pmpOriginal = tmpPmp = new Pmp.Builder(voice).build();
 		Files.copy(voice.getWavPath(), pathVoiceTemporary, StandardCopyOption.REPLACE_EXISTING);
 		temporaryPaths.add(pathVoiceTemporary);
 		Files.copy(voice.getPmpPath(), pathPmpTemporary, StandardCopyOption.REPLACE_EXISTING);
@@ -390,8 +391,9 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 
 	private void reloadPmpFileWithNakloid() {
 		try {
+			Files.copy(tmpVoice.getWavPath(), Paths.get("temporary", tmpVoice.getWavPath().getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
 			if (Files.exists(tmpVoice.getFrqPath())) {
-				Files.copy(tmpVoice.getFrqPath(), Paths.get("temporary", tmpVoice.getFrqPath().getFileName().toString()));
+				Files.copy(tmpVoice.getFrqPath(), Paths.get("temporary", tmpVoice.getFrqPath().getFileName().toString()), StandardCopyOption.REPLACE_EXISTING);
 				temporaryPaths.add(Paths.get("temporary", tmpVoice.getFrqPath().getFileName().toString()));
 			}
 			tmpCoreData = new CoreData.Builder().build();
