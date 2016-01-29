@@ -195,7 +195,7 @@ public class VoiceView extends Canvas {
 				gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_CYAN));
 				for (int i=0; i<pmp.size(); i++) {
 					int tmpPoint = pmp.get(i) + offset;
-					if (i == pmp.getSubFadeStart()) {
+					if (i == pmp.getSubFadeStart()-1) {
 						gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_MAGENTA));
 					}
 					gcImage.drawLine(tmpPoint, 0, tmpPoint, clientArea.height);
