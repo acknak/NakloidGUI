@@ -91,8 +91,8 @@ public class NakloidGUI {
 		preferenceStore.setDefault("ini.unit_waveform_container.num_lobes", 1);
 		preferenceStore.setDefault("ini.unit_waveform_container.uwc_normalize", true);
 		preferenceStore.setDefault("ini.pitchmark.default_pitch", 260);
-		preferenceStore.setDefault("ini.pitchmark.pitch_margin", 5);
-		preferenceStore.setDefault("ini.pitchmark.xcorr_threshold", 0.95);
+		preferenceStore.setDefault("ini.pitchmark.pitch_margin", 20);
+		preferenceStore.setDefault("ini.pitchmark.xcorr_threshold", 0.00);
 		preferenceStore.setDefault("ini.overlap.stretch_self_fade", false);
 		preferenceStore.setDefault("ini.overlap.ms_self_fade", 200);
 		preferenceStore.setDefault("ini.overlap.interpolation", true);
