@@ -67,8 +67,8 @@ public class AdvancedSettingPage extends FieldEditorPreferencePage {
 			}
 			{
 				DoubleFieldEditor field = new DoubleFieldEditor("ini.pitchmark.xcorr_threshold", "探索打切の相関閾値", group);
-				field.setValidRange(0.1, 0.999);
-				field.setErrorMessage("0.1～0.999の整数を入力して下さい");
+				field.setValidRange(0.0, 0.999);
+				field.setErrorMessage("0.0～0.999の整数を入力して下さい");
 				addField(field);
 			}
 		}
