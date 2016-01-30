@@ -127,30 +127,39 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			}
 		}
 		CoreData.Builder cdb = new CoreData.Builder();
+
 		splash.setText("歌手情報を読み込み中...");
 		try {
 			cdb.loadOtoIni();
 		} catch (IOException e) {
 			sb.append("歌手情報が読み込めませんでした。\n");
 		}
-		splash.setText("楽譜情報を読み込み中...");
-		try {
-			cdb.loadScore();
-		} catch (IOException e) {
-			sb.append("楽譜情報が読み込めませんでした。\n");
+		if (!NakloidGUI.preferenceStore.getString("workspace.path_nar").isEmpty()) {
+			splash.setText("最後に開いたnarファイルを読み込み中...");
+			try {
+				OpenAction.open(NakloidGUI.preferenceStore.getString("workspace.path_nar"));
+			} catch (IOException e) {
+				sb.append("narファイルが読み込めませんでした。\n");
+			}
+			splash.setText("楽譜情報を読み込み中...");
+			try {
+				cdb.loadScore();
+			} catch (IOException e) {
+				sb.append("楽譜情報が読み込めませんでした。\n");
+			}
+			splash.setText("ピッチ情報を読み込み中...");
+			try {
+				cdb.loadPitches();
+			} catch (IOException e) {
+				sb.append("ピッチ情報が読み込めませんでした。\n");
+			}
+			splash.setText("出力済み歌声情報を読み込み中...");
+			cdb.loadSongWaveform();
 		}
-		splash.setText("ピッチ情報を読み込み中...");
-		try {
-			cdb.loadPitches();
-		} catch (IOException e) {
-			sb.append("ピッチ情報が読み込めませんでした。\n");
-		}
-		splash.setText("出力済み歌声情報を読み込み中...");
-		cdb.loadSongWaveform();
-		coreData = cdb.build();
-		coreData.addSubscribers(this);
 
 		splash.setText("準備中...");
+		coreData = cdb.build();
+		coreData.addSubscribers(this);
 		displayMode = MainWindowDisplayMode.NOTES;
 		saveAction = new SaveAction(this, coreData);
 		saveAsAction = new SaveAsAction(this, coreData);
@@ -340,6 +349,30 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			optionMenu.add(aboutNakloidAction);
 		}
 		return menuBar;
+	}
+
+	@Override
+	protected boolean canHandleShellCloseEvent() {
+		if (!NakloidGUI.preferenceStore.getBoolean("workspace.is_saved")) {
+			MessageDialog dialog = new MessageDialog(
+					getShell(),
+					"NakloidGUI",
+					null,
+					"楽譜が変更されています。変更を保存しますか？",
+					MessageDialog.QUESTION,
+					new String[] { "はい", "いいえ", "キャンセル" },
+					0);
+			int result = dialog.open();
+			if (result == 0) {
+				saveAction.run();
+				return true;
+			} else if (result == 1) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

@@ -32,16 +32,15 @@ public class NakloidGUI {
 				System.exit(0);
 			}
 			try (Stream<Path> pathStream = Files.walk(Paths.get("temporary"))) {
-				pathStream.filter(p->!p.getFileName().toString().equals("score.nak"))
-					.filter(p->!p.getFileName().toString().equals("pitches.pit"))
-					.filter(p->!p.getFileName().toString().equals("song.wav"))
-					.forEach(p->{try{Files.delete(p);}catch(Exception e){}});
+				pathStream.forEach(p->{try{Files.delete(p);}catch(Exception e){}});
 			} catch (IOException e) {}
 			initializePreferenceValue();
 			MainWindow mainWindow = new MainWindow();
 			mainWindow.setBlockOnOpen(true);
 			mainWindow.open();
 			Display.getCurrent().dispose();
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(new JPanel(), "原因不明なエラーが発生しました。\n"+e.toString(), "NakloidGUI", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			Files.deleteIfExists(Paths.get("lock"));
 		}
