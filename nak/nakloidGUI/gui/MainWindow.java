@@ -450,8 +450,10 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 
 	@Override
 	public void waveformSeeked() {
-		overView.redraw();
-		mainView.redraw();
+		if (!getShell().isDisposed()) {
+			overView.redraw();
+			mainView.redraw();
+		}
 	}
 
 	public void preferenceReloaded() {
