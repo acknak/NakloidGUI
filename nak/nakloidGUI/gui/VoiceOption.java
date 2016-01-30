@@ -112,7 +112,11 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 				Files.copy(voicePrefix.getPmpPath(), prefixVoicePmpPath, StandardCopyOption.REPLACE_EXISTING);
 				temporaryPaths.add(prefixVoicePmpPath);
 			} else {
-				MessageDialog.openError(getShell(), "NakloidGUI", "「"+tmpPreVoice.getPronunciationString()+"」は存在しない発音です。");
+				if (tmpPreVoice==null) {
+					MessageDialog.openError(getShell(), "NakloidGUI", "存在しない発音が選択されました。");
+				} else {
+					MessageDialog.openError(getShell(), "NakloidGUI", "「"+tmpPreVoice.getPronunciationString()+"」は存在しない発音です。");
+				}
 			}
 		} else {
 			voicePrefix = null;
