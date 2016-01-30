@@ -2,10 +2,15 @@ package nak.nakloidGUI.gui;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -96,7 +101,13 @@ public class VocalOption extends Dialog implements CoreDataSubscriber {
 					VoiceOption dialog = new VoiceOption(getShell(), coreData, voice);
 					dialog.open();
 				} catch (IOException e) {
-					MessageDialog.openError(getShell(), "NakloidGUI", "音声の読込に失敗しました。\n"+e.toString()+e.getMessage());
+					ErrorDialog.openError(getShell(), "NakloidGUI",
+							"音声情報編集のためのファイルの入出力時にエラーが発生しました。",
+							new MultiStatus(".", IStatus.ERROR,
+									Stream.of(e.getStackTrace())
+											.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+											.collect(Collectors.toList()).toArray(new Status[]{}),
+									e.getLocalizedMessage(), e));
 				}
 			}
 		});

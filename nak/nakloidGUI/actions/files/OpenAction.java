@@ -6,9 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
@@ -36,7 +41,13 @@ public class OpenAction extends AbstractAction {
 		try {
 			open(openDialog.open());
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"narファイルの展開に失敗しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		}
 		mainWindow.updateWindowName();
 		try {
@@ -46,14 +57,32 @@ public class OpenAction extends AbstractAction {
 					try {
 						coreData.reloadScoreAndPitches();
 					} catch (IOException e) {
-						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.toString()+e.getMessage());
+						ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+								"楽譜情報の再読込に失敗しました。",
+								new MultiStatus(".", IStatus.ERROR,
+										Stream.of(e.getStackTrace())
+												.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+												.collect(Collectors.toList()).toArray(new Status[]{}),
+										e.getLocalizedMessage(), e));
 					}
 				}
 			});
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの読み取りに失敗しました。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"歌声合成のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダ及びNakloid.iniに書き込み権限があるか確認してください。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		} catch (InterruptedException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "歌声合成時にエラーが発生しました。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"歌声合成中にスレッドが中断されました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		}
 	}
 

@@ -5,8 +5,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
@@ -40,7 +45,13 @@ public class ExportWavAction extends AbstractAction {
 			Files.deleteIfExists(pathExportWav);
 			Files.copy(pathWav, pathExportWav, StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイル操作に失敗しました。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"wavファイル出力のためのファイル操作に失敗しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		}
 	}
 }

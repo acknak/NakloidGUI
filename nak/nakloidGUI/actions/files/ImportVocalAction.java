@@ -11,8 +11,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipFile;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -80,12 +86,24 @@ public class ImportVocalAction extends AbstractAction {
 							System.out.println(entry.getName());
 						}
 					} catch (IOException e) {
-						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", entry.getName()+"の展開に失敗しました");
+						ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+								entry.getName()+"の展開に失敗しました。",
+								new MultiStatus(".", IStatus.ERROR,
+										Stream.of(e.getStackTrace())
+												.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+												.collect(Collectors.toList()).toArray(new Status[]{}),
+										e.getLocalizedMessage(), e));
 						return;
 					}
 				});
 			} catch (IOException e) {
-				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの展開に失敗しました。\n"+e.toString()+e.getMessage());
+				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+						"ファイルの展開に失敗しました。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
 				return;
 			}
 			try {
@@ -101,7 +119,13 @@ public class ImportVocalAction extends AbstractAction {
 				}
 				coreData.reloadVocal();
 			} catch (IOException e) {
-				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ボーカルの読み込みに失敗しました。\n"+e.toString()+e.getMessage());
+				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+						"ボーカルの読み込みに失敗しました。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
 				return;
 			}
 		}

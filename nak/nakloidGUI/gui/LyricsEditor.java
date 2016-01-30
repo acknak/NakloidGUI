@@ -3,10 +3,14 @@ package nak.nakloidGUI.gui;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -51,11 +55,33 @@ public class LyricsEditor extends Dialog {
 			coreData.setLyrics(Arrays.stream(text.getText().split(",")).map(PronunciationAlias::new).collect(Collectors.toList()));
 			try {
 				coreData.saveScore();
+			} catch (IOException e) {
+				ErrorDialog.openError(getShell(), "NakloidGUI",
+						"歌詞保存のファイル入出力時にエラーが発生しました。\ntemporaryフォルダに書き込み権限があるか確認してください。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
+			}
+			try {
 				coreData.synthesize(null);
 			} catch (IOException e) {
-				MessageDialog.openError(getShell(), "NakloidGUI", "歌詞の保存に失敗しました。\n"+e.toString()+e.getMessage());
+				ErrorDialog.openError(getShell(), "NakloidGUI",
+						"歌声合成のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダ及びNakloid.iniに書き込み権限があるか確認してください。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
 			} catch (InterruptedException e) {
-				MessageDialog.openError(getShell(), "NakloidGUI", "歌声の合成に失敗しました。\n"+e.toString()+e.getMessage());
+				ErrorDialog.openError(getShell(), "NakloidGUI",
+						"歌声合成中にスレッドが中断されました。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
 			}
 		}
 		super.buttonPressed(buttonId);

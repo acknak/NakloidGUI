@@ -1,11 +1,16 @@
 package nak.nakloidGUI.actions.executors;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
@@ -34,7 +39,13 @@ public class PlayAction extends AbstractAction {
 				try {
 					coreData.getSongWaveform().play();
 				} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-					MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "Wavファイルの読み込みに失敗しました。\n"+e.toString()+e.getMessage());
+					ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+							"Wavファイルの読み込みに失敗しました。",
+							new MultiStatus(".", IStatus.ERROR,
+									Stream.of(e.getStackTrace())
+											.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+											.collect(Collectors.toList()).toArray(new Status[]{}),
+									e.getLocalizedMessage(), e));
 				}
 				Display.getCurrent().asyncExec(new Runnable () {
 					@Override

@@ -1,8 +1,14 @@
 package nak.nakloidGUI.gui;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -69,7 +75,13 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 				}
 			}
 		} catch (IOException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "楽譜の保存に失敗しました。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(getShell(), "NakloidGUI",
+					"楽譜保存時のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダに書き込み権限があるか確認してください。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		} finally {
 			super.buttonPressed(buttonId);
 		}
@@ -353,7 +365,13 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 			VoiceOption dialog = new VoiceOption(getShell(), coreData, voice);
 			dialog.open();
 		} catch (IOException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "存在しない発音です。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(getShell(), "NakloidGUI",
+					"oto.iniに存在しない発音が選択されました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		}
 	}
 }

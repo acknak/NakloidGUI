@@ -15,6 +15,10 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
@@ -66,7 +70,13 @@ public class ExportVocalAction extends AbstractAction {
 				}
 			}
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ボーカルのエクスポートに失敗しました。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"ボーカルのエクスポートに失敗しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 			return;
 		}
 		MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", (coreData.getVocalInfo()==null)?"ボーカル":coreData.getVocalInfo().getName()+"をエクスポートしました。");

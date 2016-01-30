@@ -6,8 +6,12 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -360,8 +364,14 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 				coreData.replaceMidiNoteNumbers(tmpMidiNoteNumbers, (int)((minCursorX-offset.x)*msByPixel));
 				try {
 					coreData.savePitches();
-				} catch (IOException e1) {
-					MessageDialog.openError(getShell(), "NakloidGUI", "ピッチ情報の保存に失敗しました。\n"+e1.getMessage());
+				} catch (IOException ex) {
+					ErrorDialog.openError(getShell(), "NakloidGUI",
+							"ピッチ情報の保存に失敗しました。",
+							new MultiStatus(".", IStatus.ERROR,
+									Stream.of(ex.getStackTrace())
+											.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+											.collect(Collectors.toList()).toArray(new Status[]{}),
+									ex.getLocalizedMessage(), ex));
 				}
 				cursorLocus.clear();
 				mainViewListeners.stream().forEach(MainViewListener::pitchesDrawn);

@@ -8,11 +8,17 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
@@ -139,7 +145,13 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 				Files.deleteIfExists(tmpVoice.getUwcPath());
 				coreData.saveVoice(tmpVoice);
 			} catch (IOException e) {
-				MessageDialog.openError(getShell(), "NakloidGUI", "ファイル入出力に失敗しました。\n"+e.toString()+e.getMessage());
+				ErrorDialog.openError(getShell(), "NakloidGUI",
+						"音声保存の入出力時にエラーが発生しました。\ntemporaryフォルダ及びNakloid.iniに書き込み権限があるか確認してください。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
 			}
 		}
 		for (Path path : temporaryPaths) {
@@ -407,7 +419,13 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 			tmpCoreData.makePmp(tmpVoice.getPronunciationString());
 			tmpPmp = new Pmp.Builder(pathPmpTemporary).build();
 		} catch (IOException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "ピッチマークの再読込に失敗しました。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(getShell(), "NakloidGUI",
+					"ピッチマークの再読込のファイル入出力時にエラーが発生しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		}
 	}
 
@@ -652,7 +670,13 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 										try {
 											wf.play();
 										} catch (UnsupportedAudioFileException|IOException|LineUnavailableException e) {
-											MessageDialog.openError(getShell(), "NakloidGUI", "音声の読込に失敗しました。\n"+e.toString()+e.getMessage());
+											ErrorDialog.openError(getShell(), "NakloidGUI",
+													"出力した音声の読み込みに失敗しました。",
+													new MultiStatus(".", IStatus.ERROR,
+															Stream.of(e.getStackTrace())
+																	.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+																	.collect(Collectors.toList()).toArray(new Status[]{}),
+															e.getLocalizedMessage(), e));
 										}
 										isSongGenerated = true;
 										Display.getCurrent().timerExec(50, this);
@@ -671,7 +695,13 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 				}
 			});
 		} catch (IOException|InterruptedException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "歌声の生成に失敗しました。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(getShell(), "NakloidGUI",
+					"歌声の合成に失敗しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		}
 	}
 }

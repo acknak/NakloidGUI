@@ -3,8 +3,13 @@ package nak.nakloidGUI.actions.executors;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
@@ -24,7 +29,13 @@ public class InitializePitchesAction extends AbstractAction {
 		try {
 			Files.deleteIfExists(tmpInputPath);
 		} catch (IOException e) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ピッチ情報の削除に失敗しました。"+e.toString()+e.getMessage());
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"ピッチ情報の削除に失敗しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 			return;
 		}
 		if (coreData.getSongWaveform() != null) {
@@ -47,15 +58,33 @@ public class InitializePitchesAction extends AbstractAction {
 					try {
 						coreData.reloadPitches();
 					} catch (IOException e) {
-						MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ピッチ情報の読込に失敗しました。\n"+e.toString()+e.getMessage());
+						ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+								"ピッチ情報の読み込みに失敗しました。",
+								new MultiStatus(".", IStatus.ERROR,
+										Stream.of(e.getStackTrace())
+												.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+												.collect(Collectors.toList()).toArray(new Status[]{}),
+										e.getLocalizedMessage(), e));
 					}
 					coreData.reloadSongWaveform();
 				}
 			});
-		} catch (IOException e1) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイル入出力に失敗しました。\n"+e1.getMessage());
-		} catch (InterruptedException e2) {
-			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "Nakloidにエラーが発生しました。\n"+e2.getMessage());
+		} catch (IOException e) {
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"楽譜情報の読み込みに失敗又は歌声合成のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダ及びNakloid.iniに書き込み権限があるか確認してください。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
+		} catch (InterruptedException e) {
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"歌声合成中にスレッドが中断されました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		}
 	}
 }

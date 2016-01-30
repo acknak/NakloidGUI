@@ -2,8 +2,13 @@ package nak.nakloidGUI.actions.executors;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 
 import nak.nakloidGUI.NakloidGUI;
@@ -41,9 +46,21 @@ public class BuildAction extends AbstractAction {
 					}
 				});
 			} catch (IOException e) {
-				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "ファイルの入出力にエラーが発生しました。\n"+e.toString()+e.getMessage());
+				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+						"歌声合成のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダ及びNakloid.iniに書き込み権限があるか確認してください。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
 			} catch (InterruptedException e) {
-				MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "Nakloidが中断されました。\n"+e.toString()+e.getMessage());
+				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+						"歌声合成中にスレッドが中断されました。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
 			} finally {
 				coreData.nakloidIni.input.pitches_mode = NakloidIni.PitchesMode.pitches_mode_pit;
 				coreData.nakloidIni.output.path_output_pitches = null;

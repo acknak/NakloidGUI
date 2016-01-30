@@ -1,9 +1,15 @@
 package nak.nakloidGUI.gui;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.ApplicationWindow;
@@ -454,7 +460,13 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			mainView.redraw();
 			keyboardView.redraw();
 		} catch (IOException e) {
-			MessageDialog.openError(getShell(), "NakloidGUI", "設定ファイルの再読込に失敗しました。\n"+e.toString()+e.getMessage());
+			ErrorDialog.openError(getShell(), "NakloidGUI",
+					"NakloidGUIの設定ファイル（nakloidGUI.properties）の再読込に失敗しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
 		}
 	}
 
