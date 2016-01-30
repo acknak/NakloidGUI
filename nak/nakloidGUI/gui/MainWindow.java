@@ -153,9 +153,8 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			} catch (IOException e) {
 				sb.append("ピッチ情報が読み込めませんでした。\n");
 			}
-			splash.setText("出力済み歌声情報を読み込み中...");
-			cdb.loadSongWaveform();
 		}
+		cdb.loadSongWaveform();
 
 		splash.setText("準備中...");
 		coreData = cdb.build();
@@ -422,7 +421,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 					mainView.redraw();
 					return;
 				}
-				showWaveformStatus("歌声の生成に失敗しました");
+				showWaveformStatus("歌声が合成されていません");
 			}
 		});
 	}
