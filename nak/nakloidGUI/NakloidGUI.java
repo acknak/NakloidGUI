@@ -40,6 +40,7 @@ public class NakloidGUI {
 			mainWindow.open();
 			Display.getCurrent().dispose();
 		} catch (Exception e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(new JPanel(), "原因不明なエラーが発生しました。\n"+e.toString(), "NakloidGUI", JOptionPane.ERROR_MESSAGE);
 		} finally {
 			Files.deleteIfExists(Paths.get("lock"));
