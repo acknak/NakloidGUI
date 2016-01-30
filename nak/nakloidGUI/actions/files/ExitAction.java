@@ -17,7 +17,7 @@ public class ExitAction extends AbstractAction {
 	@Override
 	public void run() {
 		if (MessageDialog.openQuestion(mainWindow.getShell(), "NakloidGUI", "本当に終了してもよろしいですか？")) {
-			mainWindow.close();
+			mainWindow.getShell().close();
 		}
 	}
 }
