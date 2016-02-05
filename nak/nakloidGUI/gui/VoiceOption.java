@@ -610,14 +610,10 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 	private void synthesis() {
 		tmpCoreData = new CoreData.Builder().build();
 		tmpCoreData.setVoice(tmpVoice);
-		if (tmpVoice.isVCV()) {
-			Voice tmpPreVoice = coreData.getVoice(tmpVoice.getPronunciationAlias().getPrefixPron()+tmpVoice.getPronunciationAlias().getSuffix());
-			if (tmpPreVoice==null) {
-				tmpPreVoice = coreData.getVoice("- "+tmpVoice.getPronunciationAlias().getPrefixPron()+tmpVoice.getPronunciationAlias().getSuffix());
-			}
-			tmpCoreData.setVoice(tmpPreVoice);
+		if (tmpVoice.isVCV() && voicePrefix!=null) {
+			tmpCoreData.setVoice(voicePrefix);
 			Note prefix_note = new Note.Builder(1)
-					.setPronunciationAlias(tmpPreVoice.getPronunciationString())
+					.setPronunciationAlias(voicePrefix.getPronunciationString())
 					.range(100, 1000)
 					.setBasePitch(Short.valueOf(txtMusicalScale.getText()))
 					.build();
