@@ -39,7 +39,10 @@ public class NakloidGUI {
 			mainWindow.setBlockOnOpen(true);
 			mainWindow.open();
 			Display.getCurrent().dispose();
-		} catch (Exception e) {
+		} catch (UnsatisfiedLinkError e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(new JPanel(), "ライブラリが読み込めません。\nJava Runtime Environment のバージョン及び下記エラーを確認して下さい。\n"+e.toString(), "NakloidGUI", JOptionPane.ERROR_MESSAGE);
+		} catch (Exception | Error e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(new JPanel(), "原因不明なエラーが発生しました。\n"+e.toString(), "NakloidGUI", JOptionPane.ERROR_MESSAGE);
 		} finally {
