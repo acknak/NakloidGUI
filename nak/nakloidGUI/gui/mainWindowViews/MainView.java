@@ -239,14 +239,21 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 							(getMidiNoteUpperLimit()-tmpNote.getBasePitch())*noteHeight+offset.y);
 					Rectangle tmpRectangle = new Rectangle(tmpPoint.x, tmpPoint.y, (int)(tmpNote.getLength()/msByPixel), noteHeight);
 					if (displayMode == MainWindowDisplayMode.PITCHES) {
-						gcImage.setAlpha(30);
+						Rectangle rectPadding = new Rectangle(tmpRectangle.x-(int)(tmpNote.getFrontPadding()/msByPixel), tmpRectangle.y,
+								tmpRectangle.width+(int)((tmpNote.getFrontPadding()-tmpNote.getBackPadding())/msByPixel), tmpRectangle.height);
+						gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_YELLOW));
+						gcImage.drawRectangle(rectPadding);
+						gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_MAGENTA));
+						gcImage.drawRectangle(tmpRectangle);
+						gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_GRAY));
+						gcImage.drawText(tmpNote.getPronunciationAliasString(), tmpPoint.x+3, tmpPoint.y+3, true);
+					} else {
+						gcImage.setBackground(e.display.getSystemColor(SWT.COLOR_DARK_MAGENTA));
+						gcImage.fillRectangle(tmpRectangle);
+						gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_WHITE));
+						gcImage.drawRectangle(tmpRectangle);
+						gcImage.drawText(tmpNote.getPronunciationAliasString(), tmpPoint.x+3, tmpPoint.y+3, true);
 					}
-					gcImage.setBackground(e.display.getSystemColor(SWT.COLOR_DARK_MAGENTA));
-					gcImage.fillRectangle(tmpRectangle);
-					gcImage.setAlpha(255);
-					gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_WHITE));
-					gcImage.drawRectangle(tmpRectangle);
-					gcImage.drawText(tmpNote.getPronunciationAliasString(), tmpPoint.x+3, tmpPoint.y+3, true);
 				}
 			}
 
