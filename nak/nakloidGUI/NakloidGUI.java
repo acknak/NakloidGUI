@@ -31,6 +31,11 @@ public class NakloidGUI {
 				JOptionPane.showMessageDialog(new JPanel(), "NakloidGUIは二重起動をサポートしていません。", "NakloidGUI", JOptionPane.ERROR_MESSAGE);
 				System.exit(0);
 			}
+			File tmpdir = new File("temporary");
+			if (!tmpdir.isDirectory() && !tmpdir.mkdir()) {
+				JOptionPane.showMessageDialog(new JPanel(), "temporaryフォルダを作成できませんでした。", "NakloidGUI", JOptionPane.ERROR_MESSAGE);
+				System.exit(0);
+			}
 			try (Stream<Path> pathStream = Files.walk(Paths.get("temporary"))) {
 				pathStream.forEach(p->{try{Files.delete(p);}catch(Exception e){}});
 			} catch (IOException e) {}
