@@ -40,94 +40,96 @@ public class ImportVocalAction extends AbstractAction {
 
 	@Override
 	public void run() {
-		if (MessageDialog.openQuestion(mainWindow.getShell(), "NakloidGUI",
+		if (coreData.getVoicesSize()>0 &&
+				!MessageDialog.openQuestion(mainWindow.getShell(), "NakloidGUI",
 				"現在使用しているボーカルの設定情報等は削除されます。ボーカルの設定情報等を保存する場合は、この画面を一旦閉じて、ボーカルをエクスポートして下さい。\n"
 				+ "\n"
 				+ "新たにボーカルをインポートしてもよろしいですか？")) {
-			FileDialog openDialog = new FileDialog(mainWindow.getShell(), SWT.OPEN);
-			openDialog.setFilterExtensions(ext);
-			openDialog.setFilterNames(filterNames);
-			String strPath = openDialog.open();
-			if (strPath==null || strPath.isEmpty()) {
-				return;
-			}
-			Path pathVocal = Paths.get(NakloidGUI.preferenceStore.getString("ini.input.path_singer"));
+			return;
+		}
+		FileDialog openDialog = new FileDialog(mainWindow.getShell(), SWT.OPEN);
+		openDialog.setFilterExtensions(ext);
+		openDialog.setFilterNames(filterNames);
+		String strPath = openDialog.open();
+		if (strPath==null || strPath.isEmpty()) {
+			return;
+		}
+		Path pathVocal = Paths.get(NakloidGUI.preferenceStore.getString("ini.input.path_singer"));
 
-			mainWindow.flushLoggerWindow();
-			System.out.println("ボーカルのインポートを開始します...");
-			try {
-				Files.walkFileTree(pathVocal, new SimpleFileVisitor<Path>(){
-					@Override
-					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-						Files.delete(file);
-						return FileVisitResult.CONTINUE;
-					}
-					@Override
-					public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-						Files.delete(dir);
-						return FileVisitResult.CONTINUE;
-					}
-				});
-			} catch(IOException e){}
-			try (ZipFile zipFile = new ZipFile(strPath, Charset.forName("Shift_JIS"))) {
-				zipFile.stream().forEach(entry -> {
-					try (InputStream is = zipFile.getInputStream(entry)) {
-						File tmpFile = Paths.get(pathVocal.toString(), entry.getName()).toFile();
-						tmpFile.getParentFile().mkdirs();
-						if (entry.getName().lastIndexOf(".") > 0) {
-							try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
-								int size = 0;
-								byte[] buf = new byte[1024];
-								while ((size=is.read(buf)) != -1) {
-									fos.write(buf, 0, size);
-								}
-								fos.flush();
-							}
-							System.out.println(entry.getName());
-						}
-					} catch (IOException e) {
-						ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
-								entry.getName()+"の展開に失敗しました。",
-								new MultiStatus(".", IStatus.ERROR,
-										Stream.of(e.getStackTrace())
-												.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
-												.collect(Collectors.toList()).toArray(new Status[]{}),
-										e.getLocalizedMessage(), e));
-						return;
-					}
-				});
-			} catch (IOException e) {
-				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
-						"ファイルの展開に失敗しました。",
-						new MultiStatus(".", IStatus.ERROR,
-								Stream.of(e.getStackTrace())
-										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
-										.collect(Collectors.toList()).toArray(new Status[]{}),
-								e.getLocalizedMessage(), e));
-				return;
-			}
-			try {
-				if (MessageDialog.openQuestion(mainWindow.getShell(), "Nakloid GUI", "ピッチマークファイルを新規に生成しますか？")) {
-					coreData.makeAllPmp(new CoreDataSynthesisListener() {
-						@Override
-						public void synthesisFinished() {
-							MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", strPath+"をインポートしました。");
-						}
-					});
-				} else {
-					MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", strPath+"をインポートしました。");
+		mainWindow.flushLoggerWindow();
+		System.out.println("ボーカルのインポートを開始します...");
+		try {
+			Files.walkFileTree(pathVocal, new SimpleFileVisitor<Path>(){
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					Files.delete(file);
+					return FileVisitResult.CONTINUE;
 				}
-				coreData.reloadVocal();
-			} catch (IOException e) {
-				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
-						"ボーカルの読み込みに失敗しました。",
-						new MultiStatus(".", IStatus.ERROR,
-								Stream.of(e.getStackTrace())
-										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
-										.collect(Collectors.toList()).toArray(new Status[]{}),
-								e.getLocalizedMessage(), e));
-				return;
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					Files.delete(dir);
+					return FileVisitResult.CONTINUE;
+				}
+			});
+		} catch(IOException e){}
+		try (ZipFile zipFile = new ZipFile(strPath, Charset.forName("Shift_JIS"))) {
+			zipFile.stream().forEach(entry -> {
+				try (InputStream is = zipFile.getInputStream(entry)) {
+					File tmpFile = Paths.get(pathVocal.toString(), entry.getName()).toFile();
+					tmpFile.getParentFile().mkdirs();
+					if (entry.getName().lastIndexOf(".") > 0) {
+						try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
+							int size = 0;
+							byte[] buf = new byte[1024];
+							while ((size=is.read(buf)) != -1) {
+								fos.write(buf, 0, size);
+							}
+							fos.flush();
+						}
+						System.out.println(entry.getName());
+					}
+				} catch (IOException e) {
+					ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+							entry.getName()+"の展開に失敗しました。",
+							new MultiStatus(".", IStatus.ERROR,
+									Stream.of(e.getStackTrace())
+											.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+											.collect(Collectors.toList()).toArray(new Status[]{}),
+									e.getLocalizedMessage(), e));
+					return;
+				}
+			});
+		} catch (IOException e) {
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"ファイルの展開に失敗しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
+			return;
+		}
+		try {
+			if (MessageDialog.openQuestion(mainWindow.getShell(), "Nakloid GUI", "ピッチマークファイルを新規に生成しますか？")) {
+				coreData.makeAllPmp(new CoreDataSynthesisListener() {
+					@Override
+					public void synthesisFinished() {
+						MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", strPath+"をインポートしました。");
+					}
+				});
+			} else {
+				MessageDialog.openInformation(mainWindow.getShell(), "NakloidGUI", strPath+"をインポートしました。");
 			}
+			coreData.reloadVocal();
+		} catch (IOException e) {
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"ボーカルの読み込みに失敗しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
+			return;
 		}
 	}
 }
