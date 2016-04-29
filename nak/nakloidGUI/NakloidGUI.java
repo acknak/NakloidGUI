@@ -32,13 +32,13 @@ public class NakloidGUI {
 				System.exit(0);
 			}
 			File tmpdir = new File("temporary");
-			if (!tmpdir.isDirectory() && !tmpdir.mkdir()) {
+			try (Stream<Path> pathStream = Files.walk(tmpdir.toPath())) {
+				pathStream.forEach(p->{try{Files.delete(p);}catch(Exception e){}});
+			} catch (IOException e) {}
+			if (!tmpdir.mkdir() && !tmpdir.isDirectory()) {
 				JOptionPane.showMessageDialog(new JPanel(), "temporaryフォルダを作成できませんでした。", "NakloidGUI", JOptionPane.ERROR_MESSAGE);
 				System.exit(0);
 			}
-			try (Stream<Path> pathStream = Files.walk(Paths.get("temporary"))) {
-				pathStream.forEach(p->{try{Files.delete(p);}catch(Exception e){}});
-			} catch (IOException e) {}
 			initializePreferenceValue();
 			MainWindow mainWindow = new MainWindow();
 			mainWindow.setBlockOnOpen(true);
