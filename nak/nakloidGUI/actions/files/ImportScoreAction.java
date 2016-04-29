@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
@@ -36,6 +37,10 @@ public class ImportScoreAction extends AbstractAction {
 
 	@Override
 	public void run() {
+		if (coreData.getVoicesSize() < 1) {
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "歌声情報が読み込まれていません。先にボーカルをインポートして下さい。");
+			return;
+		}
 		FileDialog openScoreDialog = new FileDialog(mainWindow.getShell(), SWT.OPEN);
 		openScoreDialog.setFilterExtensions(scoreExt);
 		openScoreDialog.setFilterNames(scoreFilterNames);
