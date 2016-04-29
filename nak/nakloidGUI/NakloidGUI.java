@@ -76,8 +76,9 @@ public class NakloidGUI {
 		preferenceStore.setDefault("ini.output.compressor_threshold", -20.0);
 		preferenceStore.setDefault("ini.output.compressor_ratio", 2.5);
 		preferenceStore.setDefault("ini.output.print_debug", false);
+		preferenceStore.setDefault("ini.output.ms_output", 0);
 		preferenceStore.setDefault("ini.vocal_library.use_pmp_cache", true);
-		preferenceStore.setDefault("ini.vocal_library.use_uwc_cache", true);
+		preferenceStore.setDefault("ini.vocal_library.use_uwc_cache", false);
 		preferenceStore.setDefault("ini.note.ms_front_padding", 5);
 		preferenceStore.setDefault("ini.note.ms_back_padding", 35);
 		preferenceStore.setDefault("ini.arrange.auto_vowel_combining", true);
@@ -85,7 +86,7 @@ public class NakloidGUI {
 		preferenceStore.setDefault("ini.arrange.vibrato", true);
 		preferenceStore.setDefault("ini.arrange.ms_vibrato_offset", 200);
 		preferenceStore.setDefault("ini.arrange.ms_vibrato_width", 150);
-		preferenceStore.setDefault("ini.arrange.pitch_vibrato", 10.0);
+		preferenceStore.setDefault("ini.arrange.pitch_vibrato", 16.0);
 		preferenceStore.setDefault("ini.arrange.overshoot", true);
 		preferenceStore.setDefault("ini.arrange.ms_overshoot", 20);
 		preferenceStore.setDefault("ini.arrange.pitch_overshoot", 30.0);
@@ -101,9 +102,9 @@ public class NakloidGUI {
 		preferenceStore.setDefault("ini.pitchmark.default_pitch", 260);
 		preferenceStore.setDefault("ini.pitchmark.pitch_margin", 20);
 		preferenceStore.setDefault("ini.pitchmark.xcorr_threshold", 0.00);
-		preferenceStore.setDefault("ini.overlap.stretch_self_fade", false);
-		preferenceStore.setDefault("ini.overlap.ms_self_fade", 200);
-		preferenceStore.setDefault("ini.overlap.interpolation", true);
+		preferenceStore.setDefault("ini.overlap.stretch_self_fade", true);
+		preferenceStore.setDefault("ini.overlap.ms_self_fade", 400);
+		preferenceStore.setDefault("ini.overlap.interpolation", false);
 		preferenceStore.setDefault("ini.overlap.overlap_normalize", true);
 		preferenceStore.setDefault("ini.overlap.window_modification", true);
 		preferenceStore.setDefault("gui.mainWindow.vocalInfoDisplayMode", "tooltip");
