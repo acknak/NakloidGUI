@@ -159,9 +159,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 			int clientWidth = getClientArea().width;
 			offset.x = (int)(this.msByPixel/(double)msByPixel*(offset.x-(clientWidth/2))) + (clientWidth/2);
 			offset.y = (int)((double)noteHeight/this.noteHeight*(offset.y-(clientHeight/2))) + (clientHeight/2);
-			if (-offset.x+clientWidth > viewSize.x) {
-				offset.x = clientWidth - viewSize.x;
-			} else if (offset.x > 0) {
+			if (-offset.x+clientWidth > viewSize.x || offset.x > 0) {
 				offset.x = 0;
 			}
 			if (-offset.y+clientHeight > viewSize.y) {
