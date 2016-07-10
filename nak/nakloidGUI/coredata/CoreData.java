@@ -30,7 +30,7 @@ public class CoreData {
 	private Pitches pitches;
 	private Score score;
 	private Waveform wfSong;
-	final private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+	final public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 	private Path pathSynthStdout, pathAllPmpStdout;
 
 	private List<CoreDataSubscriber> coreDataSubscribers = new ArrayList<CoreDataSubscriber>();

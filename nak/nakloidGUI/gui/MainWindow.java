@@ -54,6 +54,7 @@ import nak.nakloidGUI.actions.files.ImportVocalAction;
 import nak.nakloidGUI.actions.files.OpenAction;
 import nak.nakloidGUI.actions.files.SaveAction;
 import nak.nakloidGUI.actions.files.SaveAsAction;
+import nak.nakloidGUI.actions.files.SpeechSynthesisAction;
 import nak.nakloidGUI.actions.options.AboutNakloidAction;
 import nak.nakloidGUI.actions.options.NakloidOptionAction;
 import nak.nakloidGUI.actions.options.VocalOptionAction;
@@ -77,9 +78,9 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	private MainView mainView;
 	private LoggerWindow loggerWindow;
 	private boolean displayLog = true;
-	final public Action saveAction, saveAsAction, openAction, importNarAction, importVocalAction, exportVocalAction, exitAction,
 	private double msByPixel = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
 	private double noteHeight = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseNoteHeight");
+	final public Action saveAction, saveAsAction, openAction, importNarAction, importVocalAction, exportVocalAction, speechSynthesisAction,exitAction,
 			addNoteAction, editLyricsAction, displayNotesAction, displayPitchesAction, displayLogAction, displayZoomInAction, displayZoomOutAction,
 			displayHorizontalZoomInAction, displayHorizontalZoomOutAction, displayVerticalZoomInAction, displayVerticalZoomOutAction,
 			playAction, buildAction, buildAndPlayAction, exportWavAction, initializePitchesAction,
@@ -173,6 +174,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		importNarAction = new ImportScoreAction(this, coreData);
 		importVocalAction = new ImportVocalAction(this, coreData);
 		exportVocalAction = new ExportVocalAction(this, coreData);
+		speechSynthesisAction = new SpeechSynthesisAction(this, coreData);
 		exitAction = new ExitAction(this, coreData);
 		addNoteAction = new AddNoteAction(this, coreData);
 		editLyricsAction = new EditLyricsAction(this, coreData);
@@ -314,6 +316,8 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			exitMenu.add(importNarAction);
 			exitMenu.add(importVocalAction);
 			exitMenu.add(exportVocalAction);
+			exitMenu.add(new org.eclipse.jface.action.Separator());
+			exitMenu.add(speechSynthesisAction);
 			exitMenu.add(new org.eclipse.jface.action.Separator());
 			exitMenu.add(exitAction);
 		}
