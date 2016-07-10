@@ -388,7 +388,6 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	@Override
 	public void updateScore() {
 		mainView.redraw();
-		mainView.update();
 		try {
 			NakloidGUI.preferenceStore.setValue("workspace.is_saved", false);
 			NakloidGUI.preferenceStore.save();
@@ -399,7 +398,6 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	@Override
 	public void updatePitches() {
 		mainView.redraw();
-		mainView.update();
 		try {
 			NakloidGUI.preferenceStore.setValue("workspace.is_saved", false);
 			NakloidGUI.preferenceStore.save();
@@ -553,7 +551,6 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 
 	public void showWaveformStatus(String message) {
 		overView.redraw(message);
-		overView.update();
 	}
 
 	private Image loadImage(String filename) {
