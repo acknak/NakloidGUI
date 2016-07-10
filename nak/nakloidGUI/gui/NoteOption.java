@@ -361,6 +361,10 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 
 	private void openVoiceDialog() {
 		Voice voice = coreData.getVoice(txtAlias.getText());
+		if (voice == null) {
+			MessageDialog.openError(getShell(), "NakloidGUI", "oto.iniに存在しない発音が選択されました。");
+			return;
+		}
 		try {
 			VoiceOption dialog = new VoiceOption(getShell(), coreData, voice);
 			dialog.open();

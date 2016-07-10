@@ -84,7 +84,7 @@ public class VolumeView extends Canvas {
 		public void paintControl(PaintEvent e) {
 			areaHeight = getClientArea().height;
 			areaWidth = getClientArea().width;
-			noteLength = note.getPronLength(voice);
+			noteLength = (voice==null)?note.getLength():note.getPronLength(voice);
 			posBase = areaHeight - maxVolume;
 
 			if (noteLength > areaWidth) {
