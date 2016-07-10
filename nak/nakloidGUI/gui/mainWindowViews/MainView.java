@@ -405,6 +405,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 			horizontalBar.setEnabled(true);
 			horizontalBar.setMaximum(viewSize.x);
 			horizontalBar.setPageIncrement((int)(clientArea.width*0.8));
+			horizontalBar.setIncrement(10);
 			horizontalBar.setThumb(clientArea.width);
 		} else {
 			horizontalBar.setEnabled(false);
@@ -413,6 +414,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 			verticalBar.setEnabled(true);
 			verticalBar.setMaximum(viewSize.y);
 			verticalBar.setPageIncrement((int)(clientArea.height*0.8));
+			verticalBar.setIncrement(10);
 			verticalBar.setThumb(clientArea.height);
 		} else {
 			verticalBar.setEnabled(false);
