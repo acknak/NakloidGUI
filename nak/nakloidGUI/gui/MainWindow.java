@@ -77,8 +77,9 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	private MainView mainView;
 	private LoggerWindow loggerWindow;
 	private boolean displayLog = true;
-	private double horizontalScale=1.0, verticalScale=1.0;
 	final public Action saveAction, saveAsAction, openAction, importNarAction, importVocalAction, exportVocalAction, exitAction,
+	private double msByPixel = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
+	private double noteHeight = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseNoteHeight");
 			addNoteAction, editLyricsAction, displayNotesAction, displayPitchesAction, displayLogAction, displayZoomInAction, displayZoomOutAction,
 			displayHorizontalZoomInAction, displayHorizontalZoomOutAction, displayVerticalZoomInAction, displayVerticalZoomOutAction,
 			playAction, buildAction, buildAndPlayAction, exportWavAction, initializePitchesAction,
@@ -423,7 +424,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 					return;
 				}
 				if (coreData.getSongWaveform().isLoaded()) {
-					overView.redraw(coreData.getSongWaveform(), mainView.getClientArea().width, mainView.getOffset().x, getMsByPixel());
+					overView.redraw(coreData.getSongWaveform(), mainView.getClientArea().width, mainView.getOffset().x, msByPixel);
 					mainView.redraw();
 					return;
 				}
@@ -434,12 +435,12 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 
 	@Override
 	public void mainViewHorizontalBarUpdated(SelectionEvent e) {
-		overView.redraw(mainView.getClientArea().width, mainView.getOffset().x, getMsByPixel());
+		overView.redraw(mainView.getClientArea().width, mainView.getOffset().x, msByPixel);
 	}
 
 	@Override
 	public void mainViewVerticalBarUpdated(SelectionEvent e) {
-		keyboardView.redraw(mainView.getOffset().y, getNoteHeight());
+		keyboardView.redraw(mainView.getOffset().y, (int)noteHeight);
 	}
 
 	@Override
@@ -515,45 +516,29 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	}
 
 	public void setHorizontalScale(double scale) {
-		double scaleLimit = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
-		if (scale > scaleLimit) {
-			horizontalScale = scaleLimit;
-		} else if (scale < 1.0) {
-			horizontalScale = 1.0;
-		} else {
-			horizontalScale = scale;
+		double upperLimit = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.msByPixelUpperLimit");
+		double lowerLimit = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.msByPixelLowerLimit");
+		msByPixel *= scale;
+		if (msByPixel > upperLimit) {
+			msByPixel = upperLimit;
+		} else if (msByPixel < lowerLimit) {
+			msByPixel = lowerLimit;
 		}
-		mainView.redraw(getMsByPixel(), getNoteHeight());
-		overView.redraw(mainView.getClientArea().width, mainView.getOffset().x, getMsByPixel());
-	}
-
-	public double getHorizontalScale() {
-		return horizontalScale;
+		mainView.redraw(msByPixel, (int)noteHeight);
+		overView.redraw(mainView.getClientArea().width, mainView.getOffset().x, msByPixel);
 	}
 
 	public void setVerticalScale(double scale) {
-		double scaleLimit = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
-		if (scale > scaleLimit) {
-			verticalScale = scaleLimit;
-		} else if (scale < 1.0) {
-			verticalScale = 1.0;
-		} else {
-			verticalScale = scale;
+		double upperLimit = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.noteHeightUpperLimit");
+		double lowerLimit = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.noteHeightLowerLimit");
+		noteHeight *= scale;
+		if (noteHeight > upperLimit) {
+			noteHeight = upperLimit;
+		} else if (noteHeight < lowerLimit) {
+			noteHeight = lowerLimit;
 		}
-		mainView.redraw(getMsByPixel(), getNoteHeight());
-		keyboardView.redraw(mainView.getOffset().y, getNoteHeight());
-	}
-
-	public double getVerticalScale() {
-		return verticalScale;
-	}
-
-	public int getNoteHeight() {
-		return (int)(NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseNoteHeight")*verticalScale);
-	}
-
-	public double getMsByPixel() {
-		return NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel") / horizontalScale;
+		mainView.redraw(msByPixel, (int)noteHeight);
+		keyboardView.redraw(mainView.getOffset().y, (int)noteHeight);
 	}
 
 	public void flushLoggerWindow() {

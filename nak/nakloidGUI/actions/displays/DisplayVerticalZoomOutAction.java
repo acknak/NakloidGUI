@@ -8,6 +8,7 @@ import nak.nakloidGUI.coredata.CoreData;
 import nak.nakloidGUI.gui.MainWindow;
 
 public class DisplayVerticalZoomOutAction extends AbstractAction {
+	private final double baseRate = Math.pow(NakloidGUI.preferenceStore.getDouble("gui.mainWindow.noteHeightUpperLimit")/NakloidGUI.preferenceStore.getDouble("gui.mainWindow.noteHeightLowerLimit"), 1/10.0);
 	public DisplayVerticalZoomOutAction(MainWindow mainWindow, CoreData coreData) {
 		super(mainWindow, coreData);
 		setText("垂直方向を縮小@Ctrl+Down");
@@ -15,7 +16,6 @@ public class DisplayVerticalZoomOutAction extends AbstractAction {
 	}
 	@Override
 	public void run() {
-		double baseRate = Math.pow(NakloidGUI.preferenceStore.getInt("gui.mainWindow.baseMsByPixel"), 1/5.0);
-		mainWindow.setVerticalScale(mainWindow.getVerticalScale()/baseRate);
+		mainWindow.setVerticalScale(1.0/baseRate);
 	}
 }

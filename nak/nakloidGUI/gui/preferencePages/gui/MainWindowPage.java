@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 
 import nak.nakloidGUI.NakloidGUI;
+import nak.nakloidGUI.gui.preferencePages.DoubleFieldEditor;
 
 public class MainWindowPage extends FieldEditorPreferencePage {
 	public MainWindowPage() {
@@ -49,15 +50,19 @@ public class MainWindowPage extends FieldEditorPreferencePage {
 			GridData data = new GridData(GridData.FILL_BOTH);
 			group.setLayoutData(data);
 			{
-				IntegerFieldEditor field = new IntegerFieldEditor("gui.mainWindow.baseNoteHeight", "基本縦長(px)", group, 2);
-				field.setValidRange(1, 99);
-				field.setErrorMessage("1～99の整数を入力して下さい");
+				IntegerFieldEditor field = new IntegerFieldEditor("gui.mainWindow.baseNoteHeight", "基本縦長(px)", group, 3);
+				field.setValidRange(NakloidGUI.preferenceStore.getInt("gui.mainWindow.noteHeightLowerLimit"),
+						NakloidGUI.preferenceStore.getInt("gui.mainWindow.noteHeightUpperLimit"));
+				field.setErrorMessage(NakloidGUI.preferenceStore.getString("gui.mainWindow.noteHeightLowerLimit")+"～"
+						+NakloidGUI.preferenceStore.getString("gui.mainWindow.noteHeightUpperLimit")+"の整数を入力して下さい");
 				addField(field);
 			}
 			{
-				IntegerFieldEditor field = new IntegerFieldEditor("gui.mainWindow.baseMsByPixel", "基本幅比(ms/px)", group, 2);
-				field.setValidRange(1, 99);
-				field.setErrorMessage("1～99の整数を入力して下さい");
+				DoubleFieldEditor field = new DoubleFieldEditor("gui.mainWindow.baseMsByPixel", "基本幅比(ms/px)", group);
+				field.setValidRange(NakloidGUI.preferenceStore.getDouble("gui.mainWindow.msByPixelLowerLimit"),
+						NakloidGUI.preferenceStore.getDouble("gui.mainWindow.msByPixelUpperLimit"));
+				field.setErrorMessage(NakloidGUI.preferenceStore.getString("gui.mainWindow.msByPixelLowerLimit")+"～"
+						+NakloidGUI.preferenceStore.getString("gui.mainWindow.msByPixelUpperLimit")+"の実数を入力して下さい");
 				addField(field);
 			}
 		}
