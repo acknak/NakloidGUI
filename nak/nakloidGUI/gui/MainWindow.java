@@ -576,7 +576,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 					+ (NakloidGUI.preferenceStore.getBoolean("workspace.is_saved")?"":"*")
 					+ windowName;
 		} else {
-			windowName = "（無題）*" + windowName;
+			windowName = "（無題）" + windowName;
 			try {
 				NakloidGUI.preferenceStore.setValue("workspace.is_saved", false);
 				NakloidGUI.preferenceStore.save();
