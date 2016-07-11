@@ -338,7 +338,7 @@ public class CoreData {
 		pb.redirectErrorStream(true);
 		Process process = pb.start();
 		BufferedReader br = Files.newBufferedReader(pathSynthStdout, Charset.forName("Shift_JIS"));
-		Display.getCurrent().asyncExec(new Runnable() {
+		Display.getCurrent().syncExec(new Runnable() {
 			@Override
 			public void run() {
 				if (Files.exists(pathSynthStdout)) {
@@ -382,7 +382,7 @@ public class CoreData {
 		pb.redirectErrorStream(true);
 		Process process = pb.start();
 		BufferedReader br = Files.newBufferedReader(pathAllPmpStdout, Charset.forName("Shift_JIS"));
-		Display.getCurrent().asyncExec(new Runnable() {
+		Display.getCurrent().syncExec(new Runnable() {
 			@Override
 			public void run() {
 				if (Files.exists(pathAllPmpStdout)) {

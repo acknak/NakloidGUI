@@ -656,7 +656,7 @@ public class VoiceOption extends Dialog implements VoiceViewListener {
 					wfSong.ifPresent(Waveform::close);
 					wfSong = Optional.of(new Waveform(tmpCoreData.nakloidIni.output.path_song));
 					if (!Display.getCurrent().isDisposed()) {
-						Display.getCurrent().asyncExec(new Runnable() {
+						Display.getCurrent().syncExec(new Runnable() {
 							boolean isSongGenerated = false;
 							@Override
 							public void run() {

@@ -17,7 +17,7 @@ public class BuildAndPlayAction extends AbstractAction {
 	@Override
 	public void run() {
 		mainWindow.buildAction.run();
-		Display.getCurrent().asyncExec(new Runnable () {
+		Display.getCurrent().syncExec(new Runnable () {
 			@Override
 			public void run() {
 				if (coreData.getSongWaveform() == null) {

@@ -418,7 +418,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			return;
 		}
 		showWaveformStatus("歌声読込中...");
-		Display.getCurrent().asyncExec(new Runnable() {
+		Display.getCurrent().syncExec(new Runnable() {
 			@Override
 			public void run() {
 				if (coreData.getSongWaveform().getStatus()==WaveformStatus.LOADING) {

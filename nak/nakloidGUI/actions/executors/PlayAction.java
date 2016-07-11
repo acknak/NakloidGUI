@@ -47,7 +47,7 @@ public class PlayAction extends AbstractAction {
 											.collect(Collectors.toList()).toArray(new Status[]{}),
 									e.getLocalizedMessage(), e));
 				}
-				Display.getCurrent().asyncExec(new Runnable () {
+				Display.getCurrent().syncExec(new Runnable () {
 					@Override
 					public void run() {
 						mainWindow.waveformSeeked();

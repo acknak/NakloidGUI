@@ -107,7 +107,7 @@ public class VocalInfoView extends Canvas {
 		public void mouseEnter(MouseEvent e) {
 			if (!displayLiner) {
 				displayLiner = true;
-				Display.getCurrent().asyncExec(updateInfo);
+				Display.getCurrent().syncExec(updateInfo);
 			}
 		}
 
