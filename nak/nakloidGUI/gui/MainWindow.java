@@ -60,6 +60,7 @@ import nak.nakloidGUI.actions.options.NakloidOptionAction;
 import nak.nakloidGUI.actions.options.VocalOptionAction;
 import nak.nakloidGUI.coredata.CoreData;
 import nak.nakloidGUI.coredata.CoreData.CoreDataSubscriber;
+import nak.nakloidGUI.coredata.CoreData.CoreDataSynthesisListener;
 import nak.nakloidGUI.gui.mainWindowViews.KeyboardView;
 import nak.nakloidGUI.gui.mainWindowViews.MainView;
 import nak.nakloidGUI.gui.mainWindowViews.MainView.MainViewListener;
@@ -162,7 +163,6 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 				sb.append("ピッチ情報が読み込めませんでした。\n");
 			}
 		}
-		cdb.loadSongWaveform();
 
 		splash.setText("準備中...");
 		coreData = cdb.build();
@@ -299,7 +299,18 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		if (displayLog) {
 			displayLogAction.run();
 		}
-		updateSongWaveform();
+
+		if (coreData.getScoreLength()>0 && coreData.getVoicesSize()>0) {
+			try {
+				coreData.synthesize(new CoreDataSynthesisListener() {
+					@Override
+					public void synthesisFinished() {
+						coreData.reloadSongWaveform();
+					}
+				});
+			} catch (IOException | InterruptedException e) {}
+		}
+
 		return container;
 	}
 
