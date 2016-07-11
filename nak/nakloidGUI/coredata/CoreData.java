@@ -154,6 +154,9 @@ public class CoreData {
 			pitches = new Pitches.Builder(nakloidIni.input.path_input_pitches).build();
 			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
 		}
+		if (nakloidIni.output.path_song==null && nakloidIni.output.path_song.toFile().isFile()) {
+			closeSongWaveform();
+		}
 	}
 
 	public Path getVocalPath() {

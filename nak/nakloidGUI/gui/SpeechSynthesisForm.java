@@ -87,6 +87,7 @@ public class SpeechSynthesisForm extends Dialog {
 					}
 				}
 				System.out.println("\n\n\n");
+				NakloidGUI.preferenceStore.setValue("workspace.path_nar", "");
 				coreData.reloadScoreAndPitches();
 			}
 		} catch (IOException e) {

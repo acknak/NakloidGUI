@@ -49,13 +49,14 @@ public class OpenAction extends AbstractAction {
 									.collect(Collectors.toList()).toArray(new Status[]{}),
 							e.getLocalizedMessage(), e));
 		}
-		mainWindow.updateWindowName();
 		try {
 			coreData.synthesize(new CoreDataSynthesisListener() {
 				@Override
 				public void synthesisFinished() {
 					try {
 						coreData.reloadScoreAndPitches();
+						NakloidGUI.preferenceStore.setValue("workspace.is_saved", true);
+						mainWindow.updateWindowName();
 					} catch (IOException e) {
 						ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
 								"楽譜情報の再読込に失敗しました。",
@@ -111,6 +112,5 @@ public class OpenAction extends AbstractAction {
 					} catch (Exception e) {}
 				});
 		}
-		NakloidGUI.preferenceStore.setValue("workspace.is_saved", true);
 	}
 }
