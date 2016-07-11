@@ -130,7 +130,7 @@ public class VocalInfoView extends Canvas {
 				numString = (vi.getName().length()>numString)?numString+1:0;
 				Display.getCurrent().timerExec(500, this);
 			}
-			if (!Display.getCurrent().isDisposed()) {
+			if (!getDisplay().isDisposed() && !getShell().isDisposed()) {
 				redraw();
 			}
 		}
