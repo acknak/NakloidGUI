@@ -52,7 +52,7 @@ public class LyricsEditor extends Dialog {
 	@Override
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == IDialogConstants.OK_ID) {
-			coreData.setLyrics(Arrays.stream(text.getText().split(",")).map(PronunciationAlias::new).collect(Collectors.toList()));
+			coreData.setLyrics(Arrays.stream(text.getText().replaceAll("\n", "").split(",")).map(PronunciationAlias::new).collect(Collectors.toList()));
 			try {
 				coreData.saveScore();
 			} catch (IOException e) {

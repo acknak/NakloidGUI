@@ -68,7 +68,7 @@ public class SpeechSynthesisForm extends Dialog {
 					bw.newLine();
 					bw.write("output_pitches_path="+NakloidGUI.preferenceStore.getString("ini.input.path_input_pitches"));
 					bw.newLine();
-					bw.write("pronunciation="+txtLyrics.getText());
+					bw.write("pronunciation="+txtLyrics.getText().replaceAll("\n", ""));
 					bw.newLine();
 					bw.write("f0_scaling="+String.valueOf(Double.parseDouble(txtF0Scale.getText())/100.0));
 					bw.newLine();
