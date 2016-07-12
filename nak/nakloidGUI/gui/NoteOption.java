@@ -224,7 +224,11 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 					txtBaseVelocity.setLayoutData(layTxtBaseVelocity);
 					txtBaseVelocity.addKeyListener(new KeyAdapter(){
 						public void keyReleased(KeyEvent e) {
-							tmpNote = new Note.Builder(tmpNote).setBaseVelocity(Integer.valueOf(((Text)e.getSource()).getText())).build();
+							try {
+								tmpNote = new Note.Builder(tmpNote).setBaseVelocity(Integer.valueOf(((Text)e.getSource()).getText())).build();
+							} catch (NumberFormatException e1) {
+								return;
+							}
 							volumeView.redraw(tmpNote, coreData.getVoice(tmpNote.getPronunciationAlias()));
 						}
 					});
