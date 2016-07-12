@@ -41,59 +41,50 @@ public class OpenAction extends AbstractAction {
 		FileDialog openDialog = new FileDialog(mainWindow.getShell(), SWT.SAVE);
 		openDialog.setFilterExtensions(ext);
 		openDialog.setFilterNames(filterNames);
-		try {
-			open(openDialog.open());
-		} catch (IOException e) {
-			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
-					"narファイルの展開に失敗しました。",
-					new MultiStatus(".", IStatus.ERROR,
-							Stream.of(e.getStackTrace())
-									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
-									.collect(Collectors.toList()).toArray(new Status[]{}),
-							e.getLocalizedMessage(), e));
-		}
-		try {
-			coreData.synthesize(new CoreDataSynthesisListener() {
-				@Override
-				public void synthesisFinished() {
-					try {
-						coreData.reloadScoreAndPitches();
-						NakloidGUI.preferenceStore.setValue("workspace.is_saved", true);
-						mainWindow.updateWindowName();
-					} catch (IOException e) {
-						ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
-								"楽譜情報の再読込に失敗しました。",
-								new MultiStatus(".", IStatus.ERROR,
-										Stream.of(e.getStackTrace())
-												.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
-												.collect(Collectors.toList()).toArray(new Status[]{}),
-										e.getLocalizedMessage(), e));
+		String strPath = openDialog.open();
+		if (strPath!=null && !strPath.isEmpty()) {
+			try {
+				open(strPath);
+			} catch (IOException e) {
+				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+						"narファイルの展開に失敗しました。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
+			}
+			try {
+				coreData.reloadScoreAndPitches();
+				coreData.saveScore();
+				mainWindow.updateWindowName();
+				coreData.synthesize(new CoreDataSynthesisListener() {
+					@Override
+					public void synthesisFinished() {
+						mainWindow.updateSongWaveform();
 					}
-				}
-			});
-		} catch (IOException e) {
-			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
-					"歌声合成のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダ及びNakloid.iniに書き込み権限があるか確認してください。",
-					new MultiStatus(".", IStatus.ERROR,
-							Stream.of(e.getStackTrace())
-									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
-									.collect(Collectors.toList()).toArray(new Status[]{}),
-							e.getLocalizedMessage(), e));
-		} catch (InterruptedException e) {
-			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
-					"歌声合成中にスレッドが中断されました。",
-					new MultiStatus(".", IStatus.ERROR,
-							Stream.of(e.getStackTrace())
-									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
-									.collect(Collectors.toList()).toArray(new Status[]{}),
-							e.getLocalizedMessage(), e));
+				});
+			} catch (IOException e) {
+				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+						"歌声合成のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダ及びNakloid.iniに書き込み権限があるか確認してください。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
+			} catch (InterruptedException e) {
+				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+						"歌声合成中にスレッドが中断されました。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
+			}
 		}
 	}
 
 	static public void open(String strPath) throws IOException {
-		if (strPath==null || strPath.isEmpty()) {
-			return;
-		}
 		NakloidGUI.preferenceStore.setValue("workspace.path_nar", strPath);
 		try (ZipFile zipFile = new ZipFile(strPath, Charset.forName("Shift_JIS"))) {
 			zipFile.stream()
