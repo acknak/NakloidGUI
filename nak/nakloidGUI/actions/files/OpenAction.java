@@ -35,6 +35,9 @@ public class OpenAction extends AbstractAction {
 
 	@Override
 	public void run() {
+		if (!mainWindow.showSaveConfirmDialog()) {
+			return;
+		}
 		FileDialog openDialog = new FileDialog(mainWindow.getShell(), SWT.SAVE);
 		openDialog.setFilterExtensions(ext);
 		openDialog.setFilterNames(filterNames);

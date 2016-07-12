@@ -14,6 +14,10 @@ public class SpeechSynthesisAction extends AbstractAction {
 
 	@Override
 	public void run() {
+		if (!mainWindow.showSaveConfirmDialog()) {
+			return;
+		}
+		mainWindow.flushLoggerWindow();
 		SpeechSynthesisForm dialog = new SpeechSynthesisForm(mainWindow.getShell(), coreData);
 		dialog.open();
 	}

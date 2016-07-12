@@ -41,6 +41,9 @@ public class ImportScoreAction extends AbstractAction {
 			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "歌声情報が読み込まれていません。先にボーカルをインポートして下さい。");
 			return;
 		}
+		if (!mainWindow.showSaveConfirmDialog()) {
+			return;
+		}
 		FileDialog openScoreDialog = new FileDialog(mainWindow.getShell(), SWT.OPEN);
 		openScoreDialog.setFilterExtensions(scoreExt);
 		openScoreDialog.setFilterNames(scoreFilterNames);
