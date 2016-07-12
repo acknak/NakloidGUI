@@ -86,9 +86,19 @@ public class SpeechSynthesisForm extends Dialog {
 						System.out.println(str);
 					}
 				}
-				System.out.println("\n\n\n");
 				NakloidGUI.preferenceStore.setValue("workspace.path_nar", "");
 				coreData.reloadScoreAndPitches();
+				try {
+					coreData.synthesize();
+				} catch (InterruptedException e) {
+					ErrorDialog.openError(getShell(), "NakloidGUI",
+							"話声合成中にスレッドが中断されました。",
+							new MultiStatus(".", IStatus.ERROR,
+									Stream.of(e.getStackTrace())
+											.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+											.collect(Collectors.toList()).toArray(new Status[]{}),
+									e.getLocalizedMessage(), e));
+				}
 			}
 		} catch (IOException e) {
 			ErrorDialog.openError(getShell(), "NakloidGUI",
