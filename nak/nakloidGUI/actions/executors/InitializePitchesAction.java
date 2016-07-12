@@ -66,7 +66,6 @@ public class InitializePitchesAction extends AbstractAction {
 												.collect(Collectors.toList()).toArray(new Status[]{}),
 										e.getLocalizedMessage(), e));
 					}
-					coreData.reloadSongWaveform();
 				}
 			});
 		} catch (IOException e) {

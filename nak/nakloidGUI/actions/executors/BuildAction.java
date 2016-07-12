@@ -14,7 +14,6 @@ import org.eclipse.swt.SWT;
 import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
-import nak.nakloidGUI.coredata.CoreData.CoreDataSynthesisListener;
 import nak.nakloidGUI.coredata.NakloidIni;
 import nak.nakloidGUI.gui.MainWindow;
 
@@ -39,12 +38,7 @@ public class BuildAction extends AbstractAction {
 				coreData.nakloidIni.output.path_output_pitches = Paths.get(NakloidGUI.preferenceStore.getString("ini.input.path_input_pitches"));
 			}
 			try {
-				coreData.synthesize(new CoreDataSynthesisListener() {
-					@Override
-					public void synthesisFinished() {
-						coreData.reloadSongWaveform();
-					}
-				});
+				coreData.synthesize();
 			} catch (IOException e) {
 				ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
 						"歌声合成のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダ及びNakloid.iniに書き込み権限があるか確認してください。",

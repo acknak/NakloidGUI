@@ -65,7 +65,7 @@ public class LyricsEditor extends Dialog {
 								e.getLocalizedMessage(), e));
 			}
 			try {
-				coreData.synthesize(null);
+				coreData.synthesize();
 			} catch (IOException e) {
 				ErrorDialog.openError(getShell(), "NakloidGUI",
 						"歌声合成のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダ及びNakloid.iniに書き込み権限があるか確認してください。",

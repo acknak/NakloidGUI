@@ -60,7 +60,6 @@ import nak.nakloidGUI.actions.options.NakloidOptionAction;
 import nak.nakloidGUI.actions.options.VocalOptionAction;
 import nak.nakloidGUI.coredata.CoreData;
 import nak.nakloidGUI.coredata.CoreData.CoreDataSubscriber;
-import nak.nakloidGUI.coredata.CoreData.CoreDataSynthesisListener;
 import nak.nakloidGUI.gui.mainWindowViews.KeyboardView;
 import nak.nakloidGUI.gui.mainWindowViews.MainView;
 import nak.nakloidGUI.gui.mainWindowViews.MainView.MainViewListener;
@@ -300,14 +299,9 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			displayLogAction.run();
 		}
 
-		if (coreData.getScoreLength()>0 && coreData.getVoicesSize()>0) {
+		if (coreData.getNotes().size()>0 && coreData.getVoicesSize()>0) {
 			try {
-				coreData.synthesize(new CoreDataSynthesisListener() {
-					@Override
-					public void synthesisFinished() {
-						coreData.reloadSongWaveform();
-					}
-				});
+				coreData.synthesize();
 			} catch (IOException | InterruptedException e) {}
 		}
 

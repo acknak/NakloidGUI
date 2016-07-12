@@ -353,6 +353,10 @@ public class CoreData {
 		return isSaved;
 	}
 
+	public void synthesize() throws IOException, InterruptedException {
+		synthesize(null);
+	}
+
 	public void synthesize(CoreDataSynthesisListener cdsl) throws IOException, InterruptedException {
 		nakloidIni.save();
 		System.out.println(sdf.format(System.currentTimeMillis()));
@@ -375,6 +379,7 @@ public class CoreData {
 						Files.deleteIfExists(pathSynthStdout);
 					} catch (IOException e) {
 					} finally {
+						reloadSongWaveform();
 						if (cdsl != null) {
 							cdsl.synthesisFinished();
 						}
@@ -395,6 +400,10 @@ public class CoreData {
 				System.out.println(str);
 			}
 		}
+	}
+
+	public void makeAllPmp() throws IOException {
+		makeAllPmp(null);
 	}
 
 	public void makeAllPmp(CoreDataSynthesisListener cdsl) throws IOException {
