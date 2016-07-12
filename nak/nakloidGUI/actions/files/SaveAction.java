@@ -63,7 +63,6 @@ public class SaveAction extends AbstractAction {
 					zos.write(buf, 0, len);
 				}
 			}
-			NakloidGUI.preferenceStore.setValue("workspace.is_saved", true);
 			NakloidGUI.preferenceStore.save();
 			mainWindow.updateWindowName();
 		} catch (IOException e) {

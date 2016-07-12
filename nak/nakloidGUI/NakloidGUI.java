@@ -43,6 +43,7 @@ public class NakloidGUI {
 			MainWindow mainWindow = new MainWindow();
 			mainWindow.setBlockOnOpen(true);
 			mainWindow.open();
+			preferenceStore.save();
 			Display.getCurrent().dispose();
 		} catch (UnsatisfiedLinkError e) {
 			e.printStackTrace();
@@ -58,7 +59,6 @@ public class NakloidGUI {
 	public static void initializePreferenceValue() {
 		preferenceStore = new PreferenceStore("nakloidGUI.properties");
 		preferenceStore.setDefault("workspace.path_nar", "");
-		preferenceStore.setDefault("workspace.is_saved", false);
 		preferenceStore.setDefault("workspace.path_speech_ini", "./temporary/speech.ini");
 		preferenceStore.setDefault("ini.input.path_input_score", "./temporary/score.nak");
 		preferenceStore.setDefault("ini.input.score_mode", "nak");

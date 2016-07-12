@@ -374,7 +374,11 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 
 	@Override
 	protected boolean canHandleShellCloseEvent() {
-		if (!NakloidGUI.preferenceStore.getBoolean("workspace.is_saved")) {
+		return showSaveConfirmDialog();
+	}
+
+	public boolean showSaveConfirmDialog() {
+		if (!coreData.isSaved()) {
 			MessageDialog dialog = new MessageDialog(
 					getShell(),
 					"NakloidGUI",
@@ -399,21 +403,13 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	@Override
 	public void updateScore() {
 		mainView.redraw();
-		try {
-			NakloidGUI.preferenceStore.setValue("workspace.is_saved", false);
-			NakloidGUI.preferenceStore.save();
-			updateWindowName();
-		} catch (IOException e) {}
+		updateWindowName();
 	}
 
 	@Override
 	public void updatePitches() {
 		mainView.redraw();
-		try {
-			NakloidGUI.preferenceStore.setValue("workspace.is_saved", false);
-			NakloidGUI.preferenceStore.save();
-			updateWindowName();
-		} catch (IOException e) {}
+		updateWindowName();
 	}
 
 	@Override
@@ -572,15 +568,9 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		String windowName = " - NakloidGUI";
 		String fileName = NakloidGUI.preferenceStore.getString("workspace.path_nar");
 		if (fileName!=null && !fileName.isEmpty()) {
-			windowName = Paths.get(fileName).toFile().getName()
-					+ (NakloidGUI.preferenceStore.getBoolean("workspace.is_saved")?"":"*")
-					+ windowName;
+			windowName = Paths.get(fileName).toFile().getName() + (coreData.isSaved()?"":"*") + windowName;
 		} else {
-			windowName = "（無題）" + windowName;
-			try {
-				NakloidGUI.preferenceStore.setValue("workspace.is_saved", false);
-				NakloidGUI.preferenceStore.save();
-			} catch (IOException e) {}
+			windowName = "（無題）" +  (coreData.getNotes().size()>0?"*":"") + windowName;
 		}
 		return windowName;
 	}
