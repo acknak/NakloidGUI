@@ -112,12 +112,13 @@ public class CoreData {
 			return loadSongWaveform();
 		}
 		public CoreData build() {
-			if (otoIni == null) {
-				otoIni = new Vocal();
-			}
 			if (score == null) {
 				score = new Score();
 			}
+			if (vocal == null) {
+				vocal = new Vocal();
+			}
+			score.resetNotesBorder(vocal);
 			return new CoreData(this);
 		}
 	}
@@ -147,19 +148,14 @@ public class CoreData {
 	}
 
 	public void reloadScoreAndPitches() throws IOException {
-		this.nakloidIni = new NakloidIni();
-		if (nakloidIni.input.path_input_score!=null && nakloidIni.input.path_input_score.toFile().isFile()) {
-			score = new Score(nakloidIni.input.path_input_score);
-			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
-		}
-		if (nakloidIni.input.path_input_pitches!=null && nakloidIni.input.path_input_pitches.toFile().isFile()) {
-			pitches = new Pitches.Builder(nakloidIni.input.path_input_pitches).build();
-			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
-		}
-		if (nakloidIni.output.path_song!=null && nakloidIni.output.path_song.toFile().isFile()) {
-			closeSongWaveform();
-		}
 		isSaved(false);
+		this.nakloidIni = new NakloidIni();
+		score = new Score(nakloidIni.input.path_input_score);
+		score.resetNotesBorder(vocal);
+		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
+		pitches = new Pitches.Builder(nakloidIni.input.path_input_pitches).build();
+		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
+		closeSongWaveform();
 	}
 
 	public Path getVocalPath() {
