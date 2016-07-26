@@ -63,28 +63,15 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 
 	@Override
 	protected void buttonPressed(int buttonId) {
-		try {
-			if (buttonId == IDialogConstants.OK_ID) {
-				coreData.setNote(tmpNote);
-				coreData.saveScore();
-			} else if (buttonId == IDialogConstants.ABORT_ID) {
-				if (MessageDialog.openQuestion(getShell(), "NakloidGUI", "本当にこの音符を削除しますか？")) {
-					coreData.removeNote(tmpNote);
-					coreData.saveScore();
-					buttonId = IDialogConstants.OK_ID;
-				}
+		if (buttonId == IDialogConstants.OK_ID) {
+			coreData.setNote(tmpNote);
+		} else if (buttonId == IDialogConstants.ABORT_ID) {
+			if (MessageDialog.openQuestion(getShell(), "NakloidGUI", "本当にこの音符を削除しますか？")) {
+				coreData.removeNote(tmpNote);
+				buttonId = IDialogConstants.OK_ID;
 			}
-		} catch (IOException e) {
-			ErrorDialog.openError(getShell(), "NakloidGUI",
-					"楽譜保存時のファイルの入出力時にエラーが発生しました。\ntemporaryフォルダに書き込み権限があるか確認してください。",
-					new MultiStatus(".", IStatus.ERROR,
-							Stream.of(e.getStackTrace())
-									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
-									.collect(Collectors.toList()).toArray(new Status[]{}),
-							e.getLocalizedMessage(), e));
-		} finally {
-			super.buttonPressed(buttonId);
 		}
+		super.buttonPressed(buttonId);
 	}
 
 	@Override
@@ -95,8 +82,12 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, "完了", true);
-		createButton(parent, IDialogConstants.ABORT_ID, "削除", true);
+		if (coreData.getScoreLength() > 0) {
+			createButton(parent, IDialogConstants.OK_ID, "完了", true);
+			createButton(parent, IDialogConstants.ABORT_ID, "削除", coreData.getScoreLength()>0);
+		} else {
+			createButton(parent, IDialogConstants.OK_ID, "追加", true);
+		}
 		createButton(parent, IDialogConstants.CANCEL_ID, "キャンセル", true);
 	}
 
