@@ -397,13 +397,11 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	@Override
 	public void updateScore() {
 		mainView.redraw();
-		updateWindowName();
 	}
 
 	@Override
 	public void updatePitches() {
 		mainView.redraw();
-		updateWindowName();
 	}
 
 	@Override
@@ -434,6 +432,13 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 				showWaveformStatus("歌声が合成されていません");
 			}
 		});
+	}
+
+	@Override
+	public void updateSaveState() {
+		if (getShell() != null) {
+			getShell().setText(getWindowName());
+		}
 	}
 
 	@Override
@@ -564,14 +569,8 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		if (fileName!=null && !fileName.isEmpty()) {
 			windowName = Paths.get(fileName).toFile().getName() + (coreData.isSaved()?"":"*") + windowName;
 		} else {
-			windowName = "（無題）" +  (coreData.getNotes().size()>0?"*":"") + windowName;
+			windowName = "（無題）" +  (coreData.isSaved()?"":"*") + windowName;
 		}
 		return windowName;
-	}
-
-	public void updateWindowName() {
-		if (getShell() != null) {
-			getShell().setText(getWindowName());
-		}
 	}
 }

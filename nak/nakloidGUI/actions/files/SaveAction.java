@@ -64,7 +64,6 @@ public class SaveAction extends AbstractAction {
 				}
 			}
 			NakloidGUI.preferenceStore.save();
-			mainWindow.updateWindowName();
 		} catch (IOException e) {
 			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
 					"保存時のファイル入出力に失敗しました。",

@@ -137,6 +137,9 @@ public class VocalOption extends Dialog implements CoreDataSubscriber {
 	@Override
 	public void updateSongWaveform() {}
 
+	@Override
+	public void updateSaveState() {}
+
 	private Table createTable(Composite parent) {
 		Table table = new Table(parent, SWT.MULTI | SWT.FULL_SELECTION | SWT.BORDER | SWT.VIRTUAL);
 

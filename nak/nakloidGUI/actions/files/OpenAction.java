@@ -57,7 +57,6 @@ public class OpenAction extends AbstractAction {
 			try {
 				coreData.reloadScoreAndPitches();
 				coreData.saveScore();
-				mainWindow.updateWindowName();
 				coreData.synthesize(new CoreDataSynthesisListener() {
 					@Override
 					public void synthesisFinished() {

@@ -202,6 +202,9 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 	@Override
 	public void updateSongWaveform() {}
 
+	@Override
+	public void updateSaveState() {}
+
 	private class CanvasPaintListener implements PaintListener {
 		Rectangle clientArea = getClientArea();
 		@Override

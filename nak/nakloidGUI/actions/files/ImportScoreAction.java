@@ -123,6 +123,5 @@ public class ImportScoreAction extends AbstractAction {
 			}
 		}
 		NakloidGUI.preferenceStore.setValue("workspace.path_nar", "");
-		mainWindow.updateWindowName();
 	}
 }

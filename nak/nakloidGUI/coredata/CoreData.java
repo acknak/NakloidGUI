@@ -40,6 +40,7 @@ public class CoreData {
 		public void updatePitches();
 		public void updateVocal();
 		public void updateSongWaveform();
+		public void updateSaveState();
 	}
 	public void addSubscribers(CoreDataSubscriber coreDataSubscriber) {
 		coreDataSubscribers.add(coreDataSubscriber);
@@ -158,7 +159,7 @@ public class CoreData {
 		if (nakloidIni.output.path_song!=null && nakloidIni.output.path_song.toFile().isFile()) {
 			closeSongWaveform();
 		}
-		isSaved = false;
+		isSaved(false);
 	}
 
 	public Path getVocalPath() {
@@ -220,13 +221,13 @@ public class CoreData {
 
 	public void setPitches(Pitches pitches) {
 		this.pitches = pitches;
-		isSaved = false;
+		isSaved(false);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
 	}
 
 	public void reloadPitches() throws IOException {
 		saveScore();
-		isSaved = true;
+		isSaved(true);
 		if (nakloidIni.input.path_input_pitches!=null && nakloidIni.input.path_input_pitches.toFile().isFile()) {
 			this.pitches = new Pitches.Builder(nakloidIni.input.path_input_pitches).build();
 			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
@@ -263,28 +264,28 @@ public class CoreData {
 	public void addNote(Note note) {
 		score.addNote(note);
 		score.resetNotesBorder(vocal);
-		isSaved = false;
+		isSaved(false);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
 	public void setNote(Note note) {
 		score.setNote(note);
 		score.resetNotesBorder(vocal);
-		isSaved = false;
+		isSaved(false);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
 	public void removeNote(Note note) {
 		score.removeNote(note);
 		score.resetNotesBorder(vocal);
-		isSaved = false;
+		isSaved(false);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
 	public void removeNote(int id) {
 		score.removeNote(id);
 		score.resetNotesBorder(vocal);
-		isSaved = false;
+		isSaved(false);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
@@ -305,7 +306,7 @@ public class CoreData {
 	public void setLyrics(List<PronunciationAlias> lyrics) {
 		score.setLyrics(lyrics);
 		score.resetNotesBorder(vocal);
-		isSaved = false;
+		isSaved(false);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
 
@@ -317,14 +318,14 @@ public class CoreData {
 		if (!isSaved) {
 			score.save(nakloidIni.input.path_input_score);
 		}
-		isSaved = true;
+		isSaved(true);
 	}
 
 	public void saveScore(Path pathScore) throws JsonGenerationException, JsonMappingException, IOException {
 		if (!isSaved) {
 			score.save(pathScore);
 		}
-		isSaved = true;
+		isSaved(true);
 	}
 
 	public Waveform getSongWaveform() {
@@ -351,6 +352,11 @@ public class CoreData {
 
 	public boolean isSaved() {
 		return isSaved;
+	}
+
+	private void isSaved(boolean isSaved) {
+		this.isSaved = isSaved;
+		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateSaveState);
 	}
 
 	public void synthesize() throws IOException, InterruptedException {
