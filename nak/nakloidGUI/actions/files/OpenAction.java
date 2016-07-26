@@ -53,6 +53,7 @@ public class OpenAction extends AbstractAction {
 										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
 										.collect(Collectors.toList()).toArray(new Status[]{}),
 								e.getLocalizedMessage(), e));
+				return;
 			}
 			try {
 				coreData.reloadScoreAndPitches();
