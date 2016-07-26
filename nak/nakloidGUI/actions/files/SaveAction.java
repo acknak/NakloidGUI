@@ -40,6 +40,22 @@ public class SaveAction extends AbstractAction {
 			mainWindow.saveAsAction.run();
 			return;
 		}
+		try {
+			coreData.saveScore();
+			coreData.savePitches();
+		} catch (IOException e) {
+			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
+					"保存時のファイル入出力に失敗しました。",
+					new MultiStatus(".", IStatus.ERROR,
+							Stream.of(e.getStackTrace())
+									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+									.collect(Collectors.toList()).toArray(new Status[]{}),
+							e.getLocalizedMessage(), e));
+			try {
+				coreData.reloadScoreAndPitches();
+			} catch (IOException e1) {}
+			return;
+		}
 		Path pathNar = Paths.get(strPath);
 		Path pathScore = coreData.nakloidIni.input.path_input_score;
 		Path pathPitches = coreData.nakloidIni.input.path_input_pitches;
@@ -72,6 +88,9 @@ public class SaveAction extends AbstractAction {
 									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
 									.collect(Collectors.toList()).toArray(new Status[]{}),
 							e.getLocalizedMessage(), e));
+			try {
+				coreData.reloadScoreAndPitches();
+			} catch (IOException e1) {}
 		} finally {
 			try {
 				zos.close();
