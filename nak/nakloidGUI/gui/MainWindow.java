@@ -299,7 +299,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			displayLogAction.run();
 		}
 
-		if (coreData.getNotes().size()>0 && coreData.getVoicesSize()>0) {
+		if (coreData.getScoreLength()>0 && coreData.getVoicesSize()>0) {
 			try {
 				coreData.synthesize();
 			} catch (IOException | InterruptedException e) {}
@@ -373,15 +373,9 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 
 	public boolean showSaveConfirmDialog() {
 		if (!coreData.isSaved()) {
-			MessageDialog dialog = new MessageDialog(
-					getShell(),
-					"NakloidGUI",
-					null,
-					"楽譜が変更されています。変更を保存しますか？",
-					MessageDialog.QUESTION,
-					new String[] { "はい", "いいえ", "キャンセル" },
-					0);
-			int result = dialog.open();
+			int result = new MessageDialog(getShell(), "NakloidGUI", null,
+					"楽譜が変更されています。変更を保存しますか？", MessageDialog.QUESTION,
+					new String[] { "はい", "いいえ", "キャンセル" }, 0).open();
 			if (result == 0) {
 				saveAction.run();
 				return true;
