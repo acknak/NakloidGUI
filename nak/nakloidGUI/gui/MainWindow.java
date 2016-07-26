@@ -378,7 +378,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 					new String[] { "はい", "いいえ", "キャンセル" }, 0).open();
 			if (result == 0) {
 				saveAction.run();
-				return true;
+				return showSaveConfirmDialog();
 			} else if (result == 1) {
 				return true;
 			} else {
