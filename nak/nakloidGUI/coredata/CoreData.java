@@ -55,7 +55,7 @@ public class CoreData {
 
 	static public class Builder {
 		public NakloidIni nakloidIni;
-		public Vocal otoIni;
+		public Vocal vocal;
 		public Pitches pitches;
 		public Score score;
 		public Waveform wfSong;
@@ -65,7 +65,7 @@ public class CoreData {
 		}
 		public Builder loadFromDefaultPath() throws IOException {
 			nakloidIni = new NakloidIni(NakloidIni.pathNakloidIni);
-			otoIni = new Vocal(nakloidIni.input.path_singer);
+			vocal = new Vocal(nakloidIni.input.path_singer);
 			score = new Score(nakloidIni.input.path_input_score);
 			pitches = new Pitches.Builder(nakloidIni.input.path_input_pitches).build();
 			wfSong = new Waveform(nakloidIni.output.path_song);
@@ -80,11 +80,11 @@ public class CoreData {
 			return this;
 		}
 		public Builder loadOtoIni() throws IOException {
-			otoIni = new Vocal(nakloidIni.input.path_singer);
+			vocal = new Vocal(nakloidIni.input.path_singer);
 			return this;
 		}
 		public Builder loadOtoIni(Path path) throws IOException {
-			otoIni = new Vocal(path);
+			vocal = new Vocal(path);
 			return this;
 		}
 		public Builder loadPitches() throws IOException {
@@ -124,7 +124,7 @@ public class CoreData {
 
 	private CoreData(Builder builder) {
 		this.nakloidIni = builder.nakloidIni;
-		this.vocal = builder.otoIni;
+		this.vocal = builder.vocal;
 		this.pitches = builder.pitches;
 		this.score = builder.score;
 		this.wfSong = builder.wfSong;
