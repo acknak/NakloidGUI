@@ -14,7 +14,7 @@ public class AboutNakloidAction extends AbstractAction {
 
 	@Override
 	public void run() {
-		 MessageDialog.openInformation(mainWindow.getShell(), "Nakloidについて", "Nakloid (GUI) ver.160710\n"
+		 MessageDialog.openInformation(mainWindow.getShell(), "Nakloidについて", "Nakloid (GUI) ver.160729\n"
 		 	+ "https://github.com/acknak/Nakloid/\n\n"
 		 	+ "this software includes the work that is distributed in the Apache License 2.0\n\n"
 		 	+ "Library List (Nakloid)\n"
