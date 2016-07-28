@@ -1,7 +1,12 @@
 package nak.nakloidGUI.coredata;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -10,6 +15,9 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import org.eclipse.swt.widgets.Display;
 
@@ -26,6 +34,7 @@ import nak.nakloidGUI.models.Waveform;
 
 public class CoreData {
 	public NakloidIni nakloidIni;
+	private Path pathNar;
 	private Vocal vocal;
 	private Pitches pitches;
 	private Score score;
@@ -55,6 +64,7 @@ public class CoreData {
 
 	static public class Builder {
 		public NakloidIni nakloidIni;
+		public Path pathNar;
 		public Vocal vocal;
 		public Pitches pitches;
 		public Score score;
@@ -62,6 +72,11 @@ public class CoreData {
 
 		public Builder() {
 			nakloidIni = new NakloidIni();
+		}
+		public Builder loadNar(Path path) throws IOException {
+			decompressNar(path);
+			pathNar = path;
+			return this;
 		}
 		public Builder loadFromDefaultPath() throws IOException {
 			nakloidIni = new NakloidIni(NakloidIni.pathNakloidIni);
@@ -125,6 +140,7 @@ public class CoreData {
 
 	private CoreData(Builder builder) {
 		this.nakloidIni = builder.nakloidIni;
+		this.pathNar = builder.pathNar;
 		this.vocal = builder.vocal;
 		this.pitches = builder.pitches;
 		this.score = builder.score;
@@ -148,7 +164,6 @@ public class CoreData {
 	}
 
 	public void reloadScoreAndPitches() throws IOException {
-		isSaved(false);
 		this.nakloidIni = new NakloidIni();
 		score = new Score(nakloidIni.input.path_input_score);
 		score.resetNotesBorder(vocal);
@@ -156,6 +171,7 @@ public class CoreData {
 		pitches = new Pitches.Builder(nakloidIni.input.path_input_pitches).build();
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
 		closeSongWaveform();
+		isSaved(false);
 	}
 
 	public Path getVocalPath() {
@@ -223,7 +239,7 @@ public class CoreData {
 
 	public void reloadPitches() throws IOException {
 		saveScore();
-		isSaved(true);
+		isSaved(false);
 		if (nakloidIni.input.path_input_pitches!=null && nakloidIni.input.path_input_pitches.toFile().isFile()) {
 			this.pitches = new Pitches.Builder(nakloidIni.input.path_input_pitches).build();
 			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
@@ -314,14 +330,12 @@ public class CoreData {
 		if (!isSaved) {
 			score.save(nakloidIni.input.path_input_score);
 		}
-		isSaved(true);
 	}
 
 	public void saveScore(Path pathScore) throws JsonGenerationException, JsonMappingException, IOException {
 		if (!isSaved) {
 			score.save(pathScore);
 		}
-		isSaved(true);
 	}
 
 	public Waveform getSongWaveform() {
@@ -346,6 +360,61 @@ public class CoreData {
 		}
 	}
 
+	static public void decompressNar(Path path) throws IOException {
+		try (ZipFile zipFile = new ZipFile(path.toString(), Charset.forName("Shift_JIS"))) {
+			zipFile.stream()
+				.filter(entry -> {
+					String tmpFilename = Paths.get(entry.getName()).getFileName().toString();
+					return tmpFilename.equals("pitches.pit")||tmpFilename.equals("score.nak");
+				}).forEach(entry -> {
+					try (InputStream is = zipFile.getInputStream(entry)) {
+						File tmpFile = Paths.get("temporary", Paths.get(entry.getName()).getFileName().toString()).toFile();
+						tmpFile.getParentFile().mkdirs();
+						try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
+							int size = 0;
+							byte[] buf = new byte[1024];
+							while ((size=is.read(buf)) != -1) {
+								fos.write(buf, 0, size);
+							}
+							fos.flush();
+						}
+					} catch (Exception e) {}
+				});
+		}
+	}
+
+	public void loadNar(Path path) throws IOException {
+		decompressNar(path);
+		pathNar = path;
+		reloadScoreAndPitches();
+		NakloidGUI.preferenceStore.setValue("workspace.path_nar", path.toString());
+		isSaved(true);
+	}
+
+	public void saveNar(Path path) throws IOException  {
+		byte[] buf = new byte[1024];
+		try(ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(path.toFile()))) {
+			zos.putNextEntry(new ZipEntry(nakloidIni.input.path_input_score.getFileName().toString()));
+			try (InputStream is = new BufferedInputStream(new FileInputStream(nakloidIni.input.path_input_score.toFile()))) {
+				while (true) {
+					int len = is.read(buf);
+					if (len < 0) break;
+					zos.write(buf, 0, len);
+				}
+			}
+			zos.putNextEntry(new ZipEntry(nakloidIni.input.path_input_pitches.getFileName().toString()));
+			try (InputStream is = new BufferedInputStream(new FileInputStream(nakloidIni.input.path_input_pitches.toFile()))) {
+				while (true) {
+					int len = is.read(buf);
+					if (len < 0) break;
+					zos.write(buf, 0, len);
+				}
+			}
+			NakloidGUI.preferenceStore.setValue("workspace.path_nar", path.toString());
+			isSaved(true);
+		}
+	}
+
 	public boolean isSaved() {
 		return isSaved;
 	}
@@ -353,6 +422,10 @@ public class CoreData {
 	private void isSaved(boolean isSaved) {
 		this.isSaved = isSaved;
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateSaveState);
+	}
+
+	public Path getNarPath() {
+		return pathNar;
 	}
 
 	public void synthesize() throws IOException, InterruptedException {

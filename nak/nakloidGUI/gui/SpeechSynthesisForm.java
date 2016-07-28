@@ -77,6 +77,7 @@ public class SpeechSynthesisForm extends Dialog {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				NakloidGUI.preferenceStore.setValue("workspace.path_nar", "");
 				ProcessBuilder pb = new ProcessBuilder("WORLDforNakloid.exe", NakloidGUI.preferenceStore.getString("workspace.path_speech_ini"));
 				pb.redirectErrorStream(true);
 				Process process = pb.start();
@@ -86,8 +87,8 @@ public class SpeechSynthesisForm extends Dialog {
 						System.out.println(str);
 					}
 				}
-				NakloidGUI.preferenceStore.setValue("workspace.path_nar", "");
 				coreData.reloadScoreAndPitches();
+				coreData.saveScore();
 				try {
 					coreData.synthesize();
 				} catch (InterruptedException e) {

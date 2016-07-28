@@ -1,16 +1,9 @@
 package nak.nakloidGUI.actions.files;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -45,41 +38,16 @@ public class SaveAction extends AbstractAction {
 			coreData.savePitches();
 		} catch (IOException e) {
 			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
-					"保存時のファイル入出力に失敗しました。",
+					"一時保存のファイル入出力に失敗しました。",
 					new MultiStatus(".", IStatus.ERROR,
 							Stream.of(e.getStackTrace())
 									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
 									.collect(Collectors.toList()).toArray(new Status[]{}),
 							e.getLocalizedMessage(), e));
-			try {
-				coreData.reloadScoreAndPitches();
-			} catch (IOException e1) {}
 			return;
 		}
-		Path pathNar = Paths.get(strPath);
-		Path pathScore = coreData.nakloidIni.input.path_input_score;
-		Path pathPitches = coreData.nakloidIni.input.path_input_pitches;
-		byte[] buf = new byte[1024];
-		ZipOutputStream zos = null;
 		try {
-			zos = new ZipOutputStream(new FileOutputStream(pathNar.toFile()));
-			zos.putNextEntry(new ZipEntry(pathScore.getFileName().toString()));
-			try (InputStream is = new BufferedInputStream(new FileInputStream(pathScore.toFile()))) {
-				while (true) {
-					int len = is.read(buf);
-					if (len < 0) break;
-					zos.write(buf, 0, len);
-				}
-			}
-			zos.putNextEntry(new ZipEntry(pathPitches.getFileName().toString()));
-			try (InputStream is = new BufferedInputStream(new FileInputStream(pathPitches.toFile()))) {
-				while (true) {
-					int len = is.read(buf);
-					if (len < 0) break;
-					zos.write(buf, 0, len);
-				}
-			}
-			NakloidGUI.preferenceStore.save();
+			coreData.saveNar(Paths.get(strPath));
 		} catch (IOException e) {
 			ErrorDialog.openError(mainWindow.getShell(), "NakloidGUI",
 					"保存時のファイル入出力に失敗しました。",
@@ -88,13 +56,6 @@ public class SaveAction extends AbstractAction {
 									.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
 									.collect(Collectors.toList()).toArray(new Status[]{}),
 							e.getLocalizedMessage(), e));
-			try {
-				coreData.reloadScoreAndPitches();
-			} catch (IOException e1) {}
-		} finally {
-			try {
-				zos.close();
-			} catch (IOException e) {}
 		}
 	}
 }

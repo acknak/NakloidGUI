@@ -1,5 +1,6 @@
 package nak.nakloidGUI.gui;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -145,7 +146,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		if (!NakloidGUI.preferenceStore.getString("workspace.path_nar").isEmpty()) {
 			splash.setText("最後に開いたnarファイルを読み込み中...");
 			try {
-				OpenAction.open(NakloidGUI.preferenceStore.getString("workspace.path_nar"));
+				cdb.loadNar(Paths.get(NakloidGUI.preferenceStore.getString("workspace.path_nar")));
 			} catch (IOException e) {
 				sb.append("narファイルが読み込めませんでした。\n");
 			}
@@ -559,11 +560,11 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 
 	private String getWindowName() {
 		String windowName = " - NakloidGUI";
-		String fileName = NakloidGUI.preferenceStore.getString("workspace.path_nar");
-		if (fileName!=null && !fileName.isEmpty()) {
-			windowName = Paths.get(fileName).toFile().getName() + (coreData.isSaved()?"":"*") + windowName;
+		Path pathNar = coreData.getNarPath();
+		if (pathNar!=null && pathNar.toFile().exists()) {
+			windowName = pathNar.toFile().getName() + (coreData.isSaved()?"":"*") + windowName;
 		} else {
-			windowName = "（無題）" +  (coreData.isSaved()?"":"*") + windowName;
+			windowName = "（無題）" +  (coreData.getScoreLength()>0?"*":"") + windowName;
 		}
 		return windowName;
 	}
