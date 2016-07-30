@@ -36,6 +36,7 @@ import nak.nakloidGUI.actions.displays.DisplayHorizontalZoomInAction;
 import nak.nakloidGUI.actions.displays.DisplayHorizontalZoomOutAction;
 import nak.nakloidGUI.actions.displays.DisplayLogAction;
 import nak.nakloidGUI.actions.displays.DisplayNotesAction;
+import nak.nakloidGUI.actions.displays.DisplayNotesWindowAction;
 import nak.nakloidGUI.actions.displays.DisplayPitchesAction;
 import nak.nakloidGUI.actions.displays.DisplayVerticalZoomInAction;
 import nak.nakloidGUI.actions.displays.DisplayVerticalZoomOutAction;
@@ -78,11 +79,13 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	private KeyboardView keyboardView;
 	private MainView mainView;
 	private LoggerWindow loggerWindow;
-	private boolean displayLog = true;
+	private NotesWindow notesWindow;
+	private boolean displayLog=true, displayNotesWindow=true;
 	private double msByPixel = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
 	private double noteHeight = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseNoteHeight");
 	final public Action saveAction, saveAsAction, openAction, importNarAction, importVocalAction, exportVocalAction, speechSynthesisAction,exitAction,
-			addNoteAction, editLyricsAction, displayNotesAction, displayPitchesAction, displayLogAction, displayZoomInAction, displayZoomOutAction,
+			addNoteAction, editLyricsAction, displayNotesAction, displayNotesWindowAction,
+			displayPitchesAction, displayLogAction, displayZoomInAction, displayZoomOutAction,
 			displayHorizontalZoomInAction, displayHorizontalZoomOutAction, displayVerticalZoomInAction, displayVerticalZoomOutAction,
 			playAction, buildAction, buildAndPlayAction, exportWavAction, initializePitchesAction,
 			nakloidOptionAction, vocalOptionAction, aboutNakloidAction;
@@ -181,6 +184,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		displayNotesAction = new DisplayNotesAction(this, coreData);
 		displayPitchesAction = new DisplayPitchesAction(this, coreData);
 		displayLogAction = new DisplayLogAction(this, coreData);
+		displayNotesWindowAction = new DisplayNotesWindowAction(this, coreData);
 		displayZoomInAction = new DisplayZoomInAction(this, coreData);
 		displayZoomOutAction = new DisplayZoomOutAction(this, coreData);
 		displayHorizontalZoomInAction = new DisplayHorizontalZoomInAction(this, coreData);
@@ -299,6 +303,9 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		if (displayLog) {
 			displayLogAction.run();
 		}
+		if (displayNotesWindow) {
+			displayNotesWindowAction.run();
+		}
 
 		if (coreData.getScoreLength()>0 && coreData.getVoicesSize()>0) {
 			try {
@@ -339,6 +346,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 			displayMenu.add(displayNotesAction);
 			displayMenu.add(displayPitchesAction);
 			displayMenu.add(displayLogAction);
+			displayMenu.add(displayNotesWindowAction);
 			displayMenu.add(new org.eclipse.jface.action.Separator());
 			displayMenu.add(displayZoomInAction);
 			displayMenu.add(displayZoomOutAction);
@@ -503,6 +511,22 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		} else {
 			loggerWindow.close();
 			loggerWindow = null;
+		}
+	}
+
+	public boolean displayingNotesWindow() {
+		return displayNotesWindow;
+	}
+
+	public void displayNotesWindow(boolean displayNotesWindow) {
+		this.displayNotesWindow = displayNotesWindow;
+		if (displayNotesWindow) {
+			notesWindow = new NotesWindow(getShell(), coreData);
+			notesWindow.open();
+			mainView.forceFocus();
+		} else {
+			notesWindow.close();
+			notesWindow = null;
 		}
 	}
 
