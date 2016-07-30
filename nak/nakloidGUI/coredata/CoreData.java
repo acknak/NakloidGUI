@@ -188,7 +188,7 @@ public class CoreData {
 		return vocal.getVoice(pron.getAliasString());
 	}
 
-	public Voice[] getVoices() {
+	public Voice[] getVoicesArray() {
 		return vocal.getVoicesArray();
 	}
 

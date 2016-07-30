@@ -83,7 +83,7 @@ public class VocalOption extends Dialog implements CoreDataSubscriber {
 		tableViewer = new TableViewer(createTable(tmp_composite));
 		tableViewer.setLabelProvider(new VoiceLabelProvider());
 		tableViewer.setContentProvider(new VoiceContentProvider());
-		tableViewer.setInput(coreData.getVoices());
+		tableViewer.setInput(coreData.getVoicesArray());
 
 		final PronunciationFilter pronunciationFilter = new PronunciationFilter(txtFilter);
 		txtFilter.addKeyListener(new KeyAdapter(){
@@ -129,7 +129,7 @@ public class VocalOption extends Dialog implements CoreDataSubscriber {
 	@Override
 	public void updateVocal() {
 		if (getShell()!=null && !getShell().isDisposed()) {
-			tableViewer.setInput(coreData.getVoices());
+			tableViewer.setInput(coreData.getVoicesArray());
 			tableViewer.refresh();
 		}
 	}
