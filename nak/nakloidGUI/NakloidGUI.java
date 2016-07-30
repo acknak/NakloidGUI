@@ -121,5 +121,10 @@ public class NakloidGUI {
 		preferenceStore.setDefault("gui.mainWindow.msByPixelLowerLimit", 0.1);
 		preferenceStore.setDefault("gui.noteOption.volumeViewHeight", 150);
 		preferenceStore.setDefault("gui.voiceOption.waveformGraphHeight", 150);
+		try {
+			preferenceStore.load();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(new JPanel(), "NakloidGUIの設定が読み込めませんでした。\n初期値に戻します。\n"+e.toString(), "NakloidGUI", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }
