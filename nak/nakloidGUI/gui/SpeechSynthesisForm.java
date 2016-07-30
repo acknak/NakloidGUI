@@ -18,12 +18,15 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -212,6 +215,13 @@ public class SpeechSynthesisForm extends Dialog {
 				{
 					txtLyrics = new Text(grpLyrics, SWT.MULTI | SWT.V_SCROLL | SWT.BORDER | SWT.WRAP);
 					txtLyrics.setLayoutData(new GridData(GridData.FILL_BOTH));
+					Font initialFont = txtLyrics.getFont();
+					FontData[] fontData = initialFont.getFontData();
+					for (FontData tmpFontData : fontData) {
+						tmpFontData.setHeight(16);
+					}
+					Font newFont = new Font(Display.getCurrent(), fontData);
+					txtLyrics.setFont(newFont);
 				}
 			}
 		}
