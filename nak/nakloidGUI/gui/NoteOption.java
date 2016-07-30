@@ -65,6 +65,17 @@ public class NoteOption extends Dialog implements VolumeViewListener {
 	protected void buttonPressed(int buttonId) {
 		if (buttonId == IDialogConstants.OK_ID) {
 			coreData.setNote(tmpNote);
+			try {
+				coreData.saveScore();
+			} catch (IOException e) {
+				ErrorDialog.openError(getShell(), "NakloidGUI",
+						"音符情報の保存に失敗しました。",
+						new MultiStatus(".", IStatus.ERROR,
+								Stream.of(e.getStackTrace())
+										.map(s->new Status(IStatus.ERROR, ".", "at "+s.getClassName()+": "+s.getMethodName()))
+										.collect(Collectors.toList()).toArray(new Status[]{}),
+								e.getLocalizedMessage(), e));
+			}
 		} else if (buttonId == IDialogConstants.ABORT_ID) {
 			if (MessageDialog.openQuestion(getShell(), "NakloidGUI", "本当にこの音符を削除しますか？")) {
 				coreData.removeNote(tmpNote);

@@ -171,6 +171,8 @@ public class CoreData {
 		pitches = new Pitches.Builder(nakloidIni.input.path_input_pitches).build();
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
 		closeSongWaveform();
+		NakloidGUI.preferenceStore.setValue("workspace.path_nar", "");
+		pathNar = null;
 		isSaved(false);
 	}
 
@@ -385,8 +387,8 @@ public class CoreData {
 
 	public void loadNar(Path path) throws IOException {
 		decompressNar(path);
-		pathNar = path;
 		reloadScoreAndPitches();
+		pathNar = path;
 		NakloidGUI.preferenceStore.setValue("workspace.path_nar", path.toString());
 		isSaved(true);
 	}
@@ -410,6 +412,7 @@ public class CoreData {
 					zos.write(buf, 0, len);
 				}
 			}
+			pathNar = path;
 			NakloidGUI.preferenceStore.setValue("workspace.path_nar", path.toString());
 			isSaved(true);
 		}

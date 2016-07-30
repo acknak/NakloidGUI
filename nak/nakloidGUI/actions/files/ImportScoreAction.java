@@ -84,7 +84,6 @@ public class ImportScoreAction extends AbstractAction {
 							MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "楽譜情報の読み込みに失敗しました。ログを確認して下さい。");
 							return;
 						}
-						NakloidGUI.preferenceStore.setValue("workspace.path_nar", "");
 						coreData.reloadScoreAndPitches();
 						coreData.synthesize();
 						mainWindow.updateSongWaveform();
