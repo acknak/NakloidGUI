@@ -64,25 +64,27 @@ public class VocalInfoView extends Canvas {
 			} else {
 				image = new Image(e.display, canvas.getClientArea().width, canvas.getClientArea().height);
 			}
-			GC gc = new GC(image);
-			gc.setAntialias(SWT.ON);
-			gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY));
-			gc.drawRectangle(0, 0, cnvWidth-1, cnvHeight-1);
-			gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-			if (vi != null) {
-				if (displayMode.equals("liner") && displayLiner && vi.hasName()) {
-					setToolTipText(null);
-					gc.setAlpha(100);
-					gc.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
-					gc.fillRectangle(0, cnvHeight-20, cnvWidth, 20);
-					gc.setAlpha(255);
-					gc.drawText(vi.getName().substring(numString), 5, cnvHeight-18, true);
-				} else if (displayMode.equals("tooltip") && vi.hasText()) {
-					setToolTipText(vi.getText());
+			if (image != null) {
+				GC gc = new GC(image);
+				gc.setAntialias(SWT.ON);
+				gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_DARK_GRAY));
+				gc.drawRectangle(0, 0, cnvWidth-1, cnvHeight-1);
+				gc.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
+				if (vi != null) {
+					if (displayMode.equals("liner") && displayLiner && vi.hasName()) {
+						setToolTipText(null);
+						gc.setAlpha(100);
+						gc.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
+						gc.fillRectangle(0, cnvHeight-20, cnvWidth, 20);
+						gc.setAlpha(255);
+						gc.drawText(vi.getName().substring(numString), 5, cnvHeight-18, true);
+					} else if (displayMode.equals("tooltip") && vi.hasText()) {
+						setToolTipText(vi.getText());
+					}
 				}
+				e.gc.drawImage(image, 0, 0);
+				gc.dispose();
 			}
-			e.gc.drawImage(image, 0, 0);
-			gc.dispose();
 		}
 	}
 
@@ -138,9 +140,11 @@ public class VocalInfoView extends Canvas {
 
 	private Image loadImage(Path path) {
 		URL url = getClass().getClassLoader().getResource(path.toString());
-		Image tmpImage;
+		Image tmpImage = null;
 		if (url == null) {
-			tmpImage = new Image(null, path.toString());
+			try {
+				tmpImage = new Image(null, path.toString());
+			} catch(Exception e) {}
 		} else {
 			ImageDescriptor id = ImageDescriptor.createFromURL(url);
 			tmpImage = id.createImage();
