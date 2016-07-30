@@ -84,9 +84,8 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	private double msByPixel = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
 	private double noteHeight = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseNoteHeight");
 	final public Action saveAction, saveAsAction, openAction, importNarAction, importVocalAction, exportVocalAction, speechSynthesisAction,exitAction,
-			addNoteAction, editLyricsAction, displayNotesAction, displayNotesWindowAction,
-			displayPitchesAction, displayLogAction, displayZoomInAction, displayZoomOutAction,
-			displayHorizontalZoomInAction, displayHorizontalZoomOutAction, displayVerticalZoomInAction, displayVerticalZoomOutAction,
+			addNoteAction, editLyricsAction, displayNotesAction, displayPitchesAction, displayLogAction, displayNotesWindowAction,
+			displayZoomInAction, displayZoomOutAction, displayHorizontalZoomInAction, displayHorizontalZoomOutAction, displayVerticalZoomInAction, displayVerticalZoomOutAction,
 			playAction, buildAction, buildAndPlayAction, exportWavAction, initializePitchesAction,
 			nakloidOptionAction, vocalOptionAction, aboutNakloidAction;
 

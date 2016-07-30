@@ -12,7 +12,7 @@ public class DisplayNotesWindowAction extends AbstractAction {
 		super("CHECKBOX_ACTION", Action.AS_CHECK_BOX, mainWindow, coreData);
 		setText("音符一覧を表示(&L)@F4");
 		setAccelerator(SWT.F4);
-		setChecked(mainWindow.displayingLog());
+		setChecked(mainWindow.displayingNotesWindow());
 	}
 	@Override
 	public void run() {
