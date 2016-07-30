@@ -13,6 +13,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Image;
@@ -28,6 +30,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 
+import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.coredata.CoreData;
 import nak.nakloidGUI.coredata.CoreData.CoreDataSubscriber;
 import nak.nakloidGUI.models.Note;
@@ -46,7 +49,22 @@ public class NotesWindow extends Dialog implements CoreDataSubscriber {
 
 	@Override
 	protected Point getInitialSize() {
+		int defaultSizeX = NakloidGUI.preferenceStore.getInt("gui.mainWindow.notesWindowSizeX");
+		int defaultSizeY = NakloidGUI.preferenceStore.getInt("gui.mainWindow.notesWindowSizeY");
+		if (defaultSizeX>0 && defaultSizeY>0) {
+			return new Point(defaultSizeX, defaultSizeY);
+		}
 		return new Point(480, 360);
+	}
+
+	@Override
+	protected Point getInitialLocation(Point initialSize)  {
+		int defaultPositionX = NakloidGUI.preferenceStore.getInt("gui.mainWindow.notesWindowPositionX");
+		int defaultPositionY = NakloidGUI.preferenceStore.getInt("gui.mainWindow.notesWindowPositionY");
+		if (defaultPositionX!=0 && defaultPositionY!=0) {
+			return new Point(defaultPositionX, defaultPositionY);
+		}
+		return super.getInitialLocation(getInitialSize());
 	}
 
 	@Override
@@ -63,6 +81,19 @@ public class NotesWindow extends Dialog implements CoreDataSubscriber {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
+		getShell().addControlListener(new ControlListener() {
+			@Override
+			public void controlResized(final ControlEvent e) {
+				NakloidGUI.preferenceStore.setValue("gui.mainWindow.notesWindowSizeX", getShell().getSize().x);
+				NakloidGUI.preferenceStore.setValue("gui.mainWindow.notesWindowSizeY", getShell().getSize().y);
+			}
+			@Override
+			public void controlMoved(final ControlEvent e) {
+				NakloidGUI.preferenceStore.setValue("gui.mainWindow.notesWindowPositionX", getShell().getLocation().x);
+				NakloidGUI.preferenceStore.setValue("gui.mainWindow.notesWindowPositionY", getShell().getLocation().y);
+			}
+		});
+
 		Composite container = (Composite)super.createDialogArea(parent);
 		GridLayout layout = new GridLayout(2, false);
 		container.setLayout(layout);

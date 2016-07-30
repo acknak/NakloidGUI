@@ -119,6 +119,16 @@ public class NakloidGUI {
 		preferenceStore.setDefault("gui.mainWindow.baseMsByPixel", 2.0);
 		preferenceStore.setDefault("gui.mainWindow.msByPixelUpperLimit", 10.0);
 		preferenceStore.setDefault("gui.mainWindow.msByPixelLowerLimit", 0.1);
+		preferenceStore.setDefault("gui.mainWindow.displayLogWindow", true);
+		preferenceStore.setDefault("gui.mainWindow.logWindowPositionX", 0);
+		preferenceStore.setDefault("gui.mainWindow.logWindowPositionY", 0);
+		preferenceStore.setDefault("gui.mainWindow.logWindowSizeX", 400);
+		preferenceStore.setDefault("gui.mainWindow.logWindowSizeY", 300);
+		preferenceStore.setDefault("gui.mainWindow.displayNotesWindow", true);
+		preferenceStore.setDefault("gui.mainWindow.notesWindowPositionX", 480);
+		preferenceStore.setDefault("gui.mainWindow.notesWindowPositionY", 360);
+		preferenceStore.setDefault("gui.mainWindow.notesWindowSizeX", 0);
+		preferenceStore.setDefault("gui.mainWindow.notesWindowSizeY", 0);
 		preferenceStore.setDefault("gui.noteOption.volumeViewHeight", 150);
 		preferenceStore.setDefault("gui.voiceOption.waveformGraphHeight", 150);
 		try {

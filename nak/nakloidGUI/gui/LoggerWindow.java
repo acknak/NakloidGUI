@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
@@ -17,6 +19,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+
+import nak.nakloidGUI.NakloidGUI;
 
 public class LoggerWindow extends Dialog {
 	Text text;
@@ -29,7 +33,22 @@ public class LoggerWindow extends Dialog {
 
 	@Override
 	protected Point getInitialSize() {
+		int defaultSizeX = NakloidGUI.preferenceStore.getInt("gui.mainWindow.logWindowSizeX");
+		int defaultSizeY = NakloidGUI.preferenceStore.getInt("gui.mainWindow.logWindowSizeY");
+		if (defaultSizeX>0 && defaultSizeY>0) {
+			return new Point(defaultSizeX, defaultSizeY);
+		}
 		return new Point(400, 300);
+	}
+
+	@Override
+	protected Point getInitialLocation(Point initialSize)  {
+		int defaultPositionX = NakloidGUI.preferenceStore.getInt("gui.mainWindow.logWindowPositionX");
+		int defaultPositionY = NakloidGUI.preferenceStore.getInt("gui.mainWindow.logWindowPositionY");
+		if (defaultPositionX!=0 && defaultPositionY!=0) {
+			return new Point(defaultPositionX, defaultPositionY);
+		}
+		return super.getInitialLocation(getInitialSize());
 	}
 
 	@Override
@@ -40,6 +59,19 @@ public class LoggerWindow extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
+		getShell().addControlListener(new ControlListener() {
+			@Override
+			public void controlResized(final ControlEvent e) {
+				NakloidGUI.preferenceStore.setValue("gui.mainWindow.logWindowSizeX", getShell().getSize().x);
+				NakloidGUI.preferenceStore.setValue("gui.mainWindow.logWindowSizeY", getShell().getSize().y);
+			}
+			@Override
+			public void controlMoved(final ControlEvent e) {
+				NakloidGUI.preferenceStore.setValue("gui.mainWindow.logWindowPositionX", getShell().getLocation().x);
+				NakloidGUI.preferenceStore.setValue("gui.mainWindow.logWindowPositionY", getShell().getLocation().y);
+			}
+		});
+
 		Composite composite = (Composite)super.createDialogArea(parent);
 		GridLayout layComposite = new GridLayout(1, false);
 		layComposite.marginHeight = layComposite.horizontalSpacing = layComposite.marginWidth = layComposite.verticalSpacing = 0;

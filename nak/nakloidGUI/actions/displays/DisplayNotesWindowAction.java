@@ -3,6 +3,7 @@ package nak.nakloidGUI.actions.displays;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
 
+import nak.nakloidGUI.NakloidGUI;
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
 import nak.nakloidGUI.gui.MainWindow;
@@ -16,6 +17,7 @@ public class DisplayNotesWindowAction extends AbstractAction {
 	}
 	@Override
 	public void run() {
+		NakloidGUI.preferenceStore.setValue("gui.mainWindow.displayNotesWindow", isChecked());
 		mainWindow.displayNotesWindow(isChecked());
 	}
 }

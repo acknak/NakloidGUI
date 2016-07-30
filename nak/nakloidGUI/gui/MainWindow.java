@@ -80,7 +80,8 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 	private MainView mainView;
 	private LoggerWindow loggerWindow;
 	private NotesWindow notesWindow;
-	private boolean displayLog=true, displayNotesWindow=true;
+	private boolean displayLog = NakloidGUI.preferenceStore.getBoolean("gui.mainWindow.displayLogWindow");
+	private boolean displayNotesWindow = NakloidGUI.preferenceStore.getBoolean("gui.mainWindow.displayNotesWindow");
 	private double msByPixel = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseMsByPixel");
 	private double noteHeight = NakloidGUI.preferenceStore.getDouble("gui.mainWindow.baseNoteHeight");
 	final public Action saveAction, saveAsAction, openAction, importNarAction, importVocalAction, exportVocalAction, speechSynthesisAction,exitAction,
