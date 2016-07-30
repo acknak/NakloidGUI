@@ -36,7 +36,13 @@ public class OpenAction extends AbstractAction {
 		FileDialog openDialog = new FileDialog(mainWindow.getShell(), SWT.SAVE);
 		openDialog.setFilterExtensions(ext);
 		openDialog.setFilterNames(filterNames);
-		Path pathNar = Paths.get(openDialog.open());
+		Path pathNar = null;
+		{
+			String pathStrNar = openDialog.open();
+			if (pathStrNar != null) {
+				pathNar = Paths.get(pathStrNar);
+			}
+		}
 		if (pathNar!=null && pathNar.toFile().exists()) {
 			try {
 				coreData.loadNar(pathNar);
