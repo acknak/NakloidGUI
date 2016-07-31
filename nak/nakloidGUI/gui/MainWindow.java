@@ -412,14 +412,16 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 		Display.getCurrent().syncExec(new Runnable() {
 			@Override
 			public void run() {
-				if (coreData.getSongWaveform().getStatus()==WaveformStatus.LOADING) {
-					Display.getCurrent().timerExec(100, this);
-					return;
-				}
-				if (coreData.getSongWaveform().isLoaded()) {
-					overView.redraw(coreData.getSongWaveform(), mainView.getClientArea().width, mainView.getOffset().x, msByPixel);
-					mainView.redraw();
-					return;
+				if (coreData.getSongWaveform() != null) {
+					if (coreData.getSongWaveform().getStatus()==WaveformStatus.LOADING) {
+						Display.getCurrent().timerExec(100, this);
+						return;
+					}
+					if (coreData.getSongWaveform().isLoaded()) {
+						overView.redraw(coreData.getSongWaveform(), mainView.getClientArea().width, mainView.getOffset().x, msByPixel);
+						mainView.redraw();
+						return;
+					}
 				}
 				showWaveformStatus("歌声が合成されていません");
 			}
