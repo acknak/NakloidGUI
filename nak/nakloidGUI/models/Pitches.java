@@ -39,6 +39,18 @@ final public class Pitches {
 			this.midiNoteNumbers = pitches.midiNoteNumbers.clone();
 			this.path = pitches.path;
 		}
+		public Builder(Pitches pitches, int size) {
+			if (pitches.size() > size) {
+				this.midiNoteNumbers = new double[size];
+				System.arraycopy(pitches.midiNoteNumbers, 0, this.midiNoteNumbers, 0, size);
+			} else if (pitches.size() < size) {
+				this.midiNoteNumbers = new double[size];
+				System.arraycopy(pitches.midiNoteNumbers, 0, this.midiNoteNumbers, 0, pitches.size());
+			} else {
+				this.midiNoteNumbers = pitches.midiNoteNumbers.clone();
+			}
+			this.path = pitches.path;
+		}
 		public Builder(double[] midiNoteNumbers) {
 			this.midiNoteNumbers = midiNoteNumbers.clone();
 		}

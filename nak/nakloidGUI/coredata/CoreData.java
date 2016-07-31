@@ -249,7 +249,7 @@ public class CoreData {
 	}
 
 	public void replaceMidiNoteNumbers(List<Double> tmpNumbers, int from) {
-		this.pitches = new Pitches.Builder(this.pitches)
+		this.pitches = new Pitches.Builder(this.pitches, score.getScoreLength())
 				.replaceMidiNoteNumbers(tmpNumbers, from)
 				.build();
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
