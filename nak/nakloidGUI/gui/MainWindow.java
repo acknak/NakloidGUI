@@ -141,6 +141,7 @@ public class MainWindow extends ApplicationWindow implements CoreDataSubscriber,
 				cdb.loadNar(Paths.get(NakloidGUI.preferenceStore.getString("workspace.path_nar")));
 			} catch (IOException e) {
 				sb.append("narファイルが読み込めませんでした。\n");
+				NakloidGUI.preferenceStore.setValue("workspace.path_nar", "");
 			}
 			splash.setText("楽譜情報を読み込み中...");
 			try {
