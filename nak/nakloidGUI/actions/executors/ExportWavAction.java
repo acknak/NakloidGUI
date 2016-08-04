@@ -1,5 +1,6 @@
 package nak.nakloidGUI.actions.executors;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,6 +13,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 
@@ -34,9 +36,16 @@ public class ExportWavAction extends AbstractAction {
 		FileDialog openDialog = new FileDialog(mainWindow.getShell(), SWT.SAVE);
 		openDialog.setFilterExtensions(ext);
 		openDialog.setFilterNames(filterNames);
-		String strPath = openDialog.open();
-		if (strPath==null || strPath.isEmpty()) {
-			return;
+		String strPath;
+		while (true) {
+			strPath = openDialog.open();
+			if (strPath==null || strPath.isEmpty()) {
+				return;
+			}
+			File tmpFile = new File(strPath);
+			if (!tmpFile.exists() || MessageDialog.openConfirm(mainWindow.getShell(), "NakloidGUI", "選択されたファイルは既に存在します。上書きしますか？")) {
+				break;
+			}
 		}
 		mainWindow.buildAction.run();
 		Path pathExportWav = Paths.get(strPath);
