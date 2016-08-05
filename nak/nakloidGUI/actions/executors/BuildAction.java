@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 
 import nak.nakloidGUI.NakloidGUI;
@@ -59,6 +60,8 @@ public class BuildAction extends AbstractAction {
 				coreData.nakloidIni.input.pitches_mode = NakloidIni.PitchesMode.pitches_mode_pit;
 				coreData.nakloidIni.output.path_output_pitches = null;
 			}
+		} else {
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "音符が見つからないため歌声合成ができません。");
 		}
 	}
 }

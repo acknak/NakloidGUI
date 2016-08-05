@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 import nak.nakloidGUI.actions.AbstractAction;
 import nak.nakloidGUI.coredata.CoreData;
@@ -25,6 +26,10 @@ public class InitializePitchesAction extends AbstractAction {
 
 	@Override
 	public void run() {
+		if (coreData.getScoreLength() == 0) {
+			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "音符が見つからないためピッチ情報が作成できません。");
+			return;
+		}
 		final Path tmpInputPath = coreData.nakloidIni.input.path_input_pitches;
 		try {
 			Files.deleteIfExists(tmpInputPath);
