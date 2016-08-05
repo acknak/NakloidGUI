@@ -30,6 +30,9 @@ public class InitializePitchesAction extends AbstractAction {
 			MessageDialog.openError(mainWindow.getShell(), "NakloidGUI", "音符が見つからないためピッチ情報が作成できません。");
 			return;
 		}
+		if (!MessageDialog.openConfirm(mainWindow.getShell(), "NakloidGUI", "現在のピッチ情報は全て破棄されます。よろしいですか？")) {
+			return;
+		}
 		final Path tmpInputPath = coreData.nakloidIni.input.path_input_pitches;
 		try {
 			Files.deleteIfExists(tmpInputPath);
