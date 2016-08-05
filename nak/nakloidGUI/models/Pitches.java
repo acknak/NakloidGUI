@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -140,7 +139,7 @@ final public class Pitches {
 			for (double midiNoteNumber : midiNoteNumbers) {
 				bb.putInt(Float.floatToIntBits((float)(Math.pow(2.0,(midiNoteNumber-69)/12)*440)));
 			}
-			try (BufferedOutputStream dos = new BufferedOutputStream(Files.newOutputStream(path, StandardOpenOption.WRITE))){
+			try (BufferedOutputStream dos = new BufferedOutputStream(Files.newOutputStream(path))){
 				dos.write(bb.array());
 			}
 		}
