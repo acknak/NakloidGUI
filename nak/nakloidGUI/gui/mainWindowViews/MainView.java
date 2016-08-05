@@ -259,7 +259,7 @@ public class MainView extends Canvas implements CoreDataSubscriber {
 			}
 
 			// draw pitches
-			if (displayMode == MainWindowDisplayMode.PITCHES) {
+			if (displayMode==MainWindowDisplayMode.PITCHES && coreData.getPitches()!=null && coreData.getPitches().size()>0) {
 				// saved pitches
 				gcImage.setForeground(e.display.getSystemColor(SWT.COLOR_DARK_CYAN));
 				double[] midiNoteNumbers = new double[coreData.getPitches().size()];
