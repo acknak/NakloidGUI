@@ -249,14 +249,25 @@ public class CoreData {
 	}
 
 	public void replaceMidiNoteNumbers(List<Double> tmpNumbers, int from) {
-		this.pitches = new Pitches.Builder(this.pitches, score.getScoreLength())
-				.replaceMidiNoteNumbers(tmpNumbers, from)
-				.build();
-		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
+		if (this.pitches!=null && this.pitches.size()>0) {
+			this.pitches = new Pitches.Builder(this.pitches, score.getScoreLength())
+					.replaceMidiNoteNumbers(tmpNumbers, from)
+					.build();
+			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
+		}
 	}
 
 	public void savePitches() throws IOException {
-		pitches.save();
+		if (pitches == null) {
+			if (getScoreLength() > 0) {
+				pitches = new Pitches.Builder(score.getScoreLength(), score.getNotes().get(0).getBasePitch(), nakloidIni.input.path_input_pitches).build();
+			}
+		} else if (pitches.size() != score.getScoreLength()) {
+			pitches = new Pitches.Builder(pitches, getScoreLength()).build();
+		}
+		if (pitches != null) {
+			pitches.save();
+		}
 	}
 
 	public void savePitches(Path pathPitches) throws IOException {
@@ -278,6 +289,11 @@ public class CoreData {
 	public void addNote(Note note) {
 		score.addNote(note);
 		score.resetNotesBorder(vocal);
+		if (score.getNotes().size() == 1) {
+			try {
+				reloadPitches();
+			} catch (IOException e) {}
+		}
 		isSaved(false);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
 	}
@@ -290,10 +306,7 @@ public class CoreData {
 	}
 
 	public void removeNote(Note note) {
-		score.removeNote(note);
-		score.resetNotesBorder(vocal);
-		isSaved(false);
-		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
+		removeNote(note.getId());
 	}
 
 	public void removeNote(int id) {
@@ -301,6 +314,12 @@ public class CoreData {
 		score.resetNotesBorder(vocal);
 		isSaved(false);
 		coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateScore);
+		if (getScoreLength() == 0) {
+			pitches = null;
+			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
+			closeSongWaveform();
+			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updateSongWaveform);
+		}
 	}
 
 	public Path getScorePath() {

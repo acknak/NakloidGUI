@@ -9,6 +9,7 @@ import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -59,6 +60,11 @@ final public class Pitches {
 			for (int i=0; i<this.midiNoteNumbers.length; i++) {
 				this.midiNoteNumbers[i] = midiNoteNumbers.get(0);
 			}
+		}
+		public Builder(int size, double midiNoteNumber, Path path) {
+			this.midiNoteNumbers = new double[size];
+			Arrays.fill(this.midiNoteNumbers, midiNoteNumber);
+			this.path = path;
 		}
 		public Builder replaceMidiNoteNumbers(double[] tmpNumbers, int from) {
 			int to = Math.min(from+tmpNumbers.length, midiNoteNumbers.length);

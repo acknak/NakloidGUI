@@ -30,7 +30,7 @@ public class PlayAction extends AbstractAction {
 
 	@Override
 	public void run() {
-		if (coreData.getSongWaveform() != null) {
+		if (coreData.getSongWaveform()!=null && coreData.getScoreLength()>0) {
 			if (coreData.getSongWaveform().isPlaying()) {
 				isPlaying = false;
 				coreData.getSongWaveform().pause();
