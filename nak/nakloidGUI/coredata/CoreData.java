@@ -253,6 +253,7 @@ public class CoreData {
 			this.pitches = new Pitches.Builder(this.pitches, score.getScoreLength())
 					.replaceMidiNoteNumbers(tmpNumbers, from)
 					.build();
+			isSaved(false);
 			coreDataSubscribers.stream().forEach(CoreDataSubscriber::updatePitches);
 		}
 	}
